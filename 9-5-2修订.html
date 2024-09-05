@@ -1,0 +1,2809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>非物质文化遗产管理系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <script src="https://webapi.amap.com/loca?v=1.3.2&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <style>
+        /* 自定义样式 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            margin: 0;
+            padding: 0;
+        }
+
+        #mapContainer {
+            width: 100%;
+            height: 95vh;
+        }
+
+        #mapContainerTour {
+            width: 100%;
+            height: 80vh;
+            margin-top: 10px;
+        }
+
+        .info-window {
+            max-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .info-window img,
+        .info-window video {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            background-color: white;
+            border: 1px solid #888;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            padding: 20px;
+        }
+
+        .close {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        img {
+            width: 300px;
+            height: auto;
+        }
+
+        .content-section {
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .layui-table th,
+        .layui-table td {
+            text-align: center;
+        }
+
+       
+
+        .results-container {
+            display: flex;
+            margin-top: 20px;
+            height: calc(100vh - 60px);
+        }
+
+        .results-sidebar {
+            width: 20%;
+            height: 100%;
+            
+            background-color: rgb(159, 1, 52);
+            padding: 0;
+        }
+
+        .results-content {
+            width: 80%;
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .results-section {
+            padding: 20px;
+        }
+
+        .article-title {
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 80vh;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-container video {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        
+        .layui-nav-tree {
+            width: 100%;
+            background-color: transparent;
+        }
+
+        .layui-nav-tree .layui-nav-item {
+            width: 100%;
+            margin: 0;
+        }
+
+        .layui-nav-tree .layui-nav-item a {
+            color: #fff;
+            padding-left: 20px;
+        }
+
+        .layui-nav-tree .layui-nav-item a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .layui-nav-tree .layui-nav-bar {
+            display: none;
+        }
+        .article-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .h24 {
+            font-size: 24px;
+            font-weight: bold;
+            color: rgb(159, 1, 52);
+            margin-bottom: 10px;
+        }
+
+        .sub {
+            margin-top: 30px;
+            color: #666;
+        }
+
+        .sub-item {
+            margin-right: 15px;
+        }
+
+        .article-cont {
+            line-height: 1.6;
+        }
+
+        .t_line {
+            border-bottom: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .article-nav {
+            margin-top: 20px;
+            text-align: right;
+            color: #666;
+        }
+
+        .list-mod4 {
+            margin-top: 20px;
+        }
+
+        .list-link {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .list-link:hover {
+            color: rgb(159, 1, 52);
+        }
+
+        .date {
+            color: #999;
+            font-size: 0.9em;
+        }
+        .text-align:justify{
+    text-align: center !important;
+}
+
+        #resultsDisplay {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        /* 新增样式 */
+        .layui-header {
+            background-color: rgb(159, 1, 52) !important;
+           
+        }
+
+        .layui-nav {
+            background-color: rgb(159, 1, 52);
+        }
+
+        .layui-nav .layui-nav-item a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        #homePage {
+            background-image: url("https://www.ihchina.cn/Public/static/themes/image/temp/img88.jpg");
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .slideshow-container {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .slideshow-image {
+            width: 100%;
+            height: 600px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .slideshow-image.active {
+            opacity: 1;
+        }
+
+        .slideshow-text {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 90px;
+            /* 调整这个值以设置文本与图片之间的间隔 */
+        }
+
+        .slideshow-text h2 {
+            font-family: "Microsoft YaHei Light", "微软雅黑 Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+            font-size: 38px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffb2bb; /* Set to red */
+        }
+
+        .slideshow-text p {
+            font-family: "SimHei", "黑体", sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffccd2; /* Set to light red */
+            margin-top: 0;
+        }
+
+        @keyframes slideLeft {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* 新增样式 */
+        .heritage-grid {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            
+        }
+
+        .heritage-item {
+            width: 350px;
+            height: 430px;
+            background-color: #cacde3;
+            box-shadow: 0 2px 20px 1px rgba(0, 0, 0, 0.12);
+            border-radius: 5px;
+            overflow: hidden;
+            transition: all .3s ease 0s;
+            cursor: pointer;
+        }
+
+        .heritage-item:hover {
+            box-shadow: 0 10px 27px 6px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .heritage-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .heritage-info {
+            padding: 20px;
+        }
+
+        .heritage-info h3 {
+            font-size: 24px;
+            color: #282828;
+            margin-bottom: 15px;
+        }
+
+        .heritage-info p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        /* 添加新样式 */
+        .layui-table-body {
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        #panel {
+            position: absolute;
+            right: 20px;
+            top: 100px;
+            z-index: 100;
+            width: 300px;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+        #typeFilter {
+            position: absolute;
+            top: 100px;
+            right: 100px;
+            z-index: 100;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            width: 120px;
+            background-color: white;
+        }
+
+        #legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+         /* 新增样式 */
+          /* 新增样式 */
+        #tourDesign {
+            font-family: 'Arial', sans-serif;
+            background: url('http://ich.dili360.com/statics/Project/img/con-bg.png') repeat;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: overlay;
+            margin: 0;
+            padding: 20px 0;
+            min-height: calc(100vh - 60px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .layui-body {
+            left: 0 !important;
+            overflow-y: auto;
+        }
+
+        .tour-design-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.tour-design-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+        .tour-design-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 1140px;
+            
+            margin: 0 auto;
+        }
+        h1 {
+    font-size: 34px;
+    color: rgb(159, 1, 52);
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 20px;
+    color: #666;
+    font-weight: normal;
+    line-height: 1.4;
+}
+        .list-mod6 {
+            margin-top: 20px;
+        }
+        .list-item {
+            border: 1px solid #e6e6e6;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .qa-title {
+            background-color: #f2f2f2;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .qa-title.cur {
+            background-color: #e6e6e6;
+        }
+        .num {
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .kw {
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .q {
+            font-size: 16px;
+            flex: 1;
+        }
+        .qa-cont {
+            padding: 20px;
+            display: none;
+        }
+        .t_line {
+            border-top: 1px solid #e6e6e6;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+        .bd {
+            border-top: 2px solid #333;
+            width: 50px;
+        }
+        .p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        h1 {
+    font-size: 32px;
+    color: rgb(159, 1, 52);
+    margin-bottom: 10px;
+    text-align: center;
+    margin-top: 100px; /* 增加离顶部的距离 */
+}
+
+h2 {
+    font-size: 20px;
+    color: #666;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 60px; /* 增加与下方区块的距离 */
+}
+    </style>
+</head>
+
+<body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+           <div class="layui-logo" style="color: white; font-size: 22px;">非物质文化遗产</div>
+
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item"><a href="javascript:;" onclick="showSection('homePage')">首页</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" onclick="showSection('tourDesign')">非遗介绍</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" onclick="showSection('mapSection')">地图展示</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" onclick="showSection('infoManagement')">基础信息</a></li>
+                <li class="layui-nav-item"><a href="javascript:;" onclick="showSection('resultsDisplay')">法律法规</a></li>
+            </ul>
+        </div>
+            <!-- 非遗介绍界面 -->
+       <!-- 新增非遗介绍部分 -->
+       <div id="tourDesign" class="content-section" style="display: none;">
+        <div class="tour-design-layout">
+            <div class="tour-design-title">
+                <h1>非物质文化遗产：传承千年智慧，守护民族瑰宝</h1>
+                <h2>探索中华文化的精髓，感受非遗的魅力与价值</h2>
+            </div>
+            <div class="tour-design-container">
+            <div class="list-mod6">
+                <div class="list-item">
+                    <div class="qa-title cur">
+                        <div class="num">01</div>
+                        <div class="kw" title="非物质文化遗产的定义">非物质文化遗产的定义</div>
+                        <div class="q" title="什么是非物质文化遗产">什么是非物质文化遗产</div>
+                    </div>
+                    <div class="qa-cont">
+                        <div class="t_line"><div class="bd"></div></div>
+                        <div class="p">
+                            <p style="text-indent:2em;">
+                                《中华人民共和国非物质文化遗产法》所称非物质文化遗产，是指各族人民世代相传并视为其文化遗产组成部分的各种传统文化表现形式，以及与传统文化表现形式相关的实物和场所。包括:
+                            </p>
+                            <p style="text-indent:2em;">
+                                    <span style="text-indent:2em;">一、传统口头文学以及作为其载体的语言；</span> 
+                                </p>
+                                <p style="text-indent:2em;">
+                                    二、传统美术、书法、音乐、舞蹈、戏剧、曲艺和杂技；
+                                </p>
+                                <p style="text-indent:2em;">
+                                    三、传统技艺、医药和历法；
+                                </p>
+                                <p style="text-indent:2em;">
+                                    四、传统礼仪、节庆等民俗；
+                                </p>
+                                <p style="text-indent:2em;">
+                                    五、传统体育和游艺；
+                                </p>
+                                <p style="text-indent:2em;">
+                                六、其他非物质文化遗产。
+                            </p>
+                            <p style="text-indent:2em;">
+                                    属于非物质文化遗产组成部分的实物和场所，凡属文物的，适用《中华人民共和国文物保护法》的有关规定。
+                                </p>
+                                <p style="text-indent:2em;">
+                                    来源：《中华人民共和国非物质文化遗产法》(中华人民共和国主席令第四十二号)
+                                </p>
+                                <p style="text-indent:2em;">
+                                    <br />
+                                </p>
+                                <p style="text-align:justify;text-indent:2em;">
+                                    <span style="text-indent:2em;">联合国教科文组织《保护非物质文化遗产公约》中所称</span><span style="text-indent:2em;">非物质文化遗产，指被各社区、群体，有时是个人，视为其文化遗产组成部分的各种社会实践、观念表述、表现形式、知识、技能以及相关的工具、实物、手工艺品和文化场所。这种非物质文化遗产世代相传，在各社区和群体适应周围环境以及与自然和历史的互动中，被不断地再创造，为这些社区和群体提供认同感和持续感，从而增强对文化多样性和人类创造力的尊重。在<span style="text-align:justify;text-indent:24px;white-space:normal;">《保护非物质文化遗产公约》</span>中，只考虑符合现有的国际人权文件，各社区、群体和个人之间相互尊重的需要和顺应可持续发展的非物质文化遗产，</span><span style="text-indent:2em;">包括以下方面：</span>
+                                </p>
+                                <p style="text-align:justify;text-indent:2em;">
+                                    <span style="text-indent:2em;">一、口头传统和表现形式，包括作为非物质文化遗产媒介的语言；</span>
+                                </p>
+                                <p style="text-indent:2em;">
+                                    二、表演艺术；
+                                </p>
+                                <p style="text-indent:2em;">
+                                    三、社会实践、仪式、节庆活动；
+                                </p>
+                                <p style="text-indent:2em;">
+                                    四、有关自然界和宇宙的知识和实践；
+                                </p>
+                                <p style="text-indent:2em;">
+                                    五、传统手工艺。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+            <div class="list-item">
+                <div class="qa-title">	
+<div class="num">02</div>
+            <div class="kw" title="“保护”九措施">“保护”九措施</div>											
+<div class="q" title="《保护非物质文化遗产公约》中对于“保护”的九项措施指什么">《保护非物质文化遗产公约》中对于“保护”的九项措施指什么</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-indent:2em;">
+“保护”指确保非物质文化遗产生命力的各种措施，包括这种遗产各个方面的确认、立档、研究、保存、保护、宣传、弘扬、传承（特别是通过正规和非正规教育）和振兴。
+</p>
+<p style="text-indent:2em;">
+来源：《保护非物质文化遗产公约》
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+<div class="num">03</div>
+            <div class="kw" title="保护主体">保护主体</div>											
+<div class="q" title="非物质文化遗产的保护主体是什么">非物质文化遗产的保护主体是什么</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-indent:2em;">
+非物质文化遗产的保护主体，指负有保护责任、从事保护工作的国际组织、各国政府相关机构、团体和社会有关部门及个人。它包括国际组织、国家政府、各级各类非物质文化遗产保护机构、社区与民众。
+</p>
+<p style="text-indent:2em;">
+来源：王文章.非物质文化遗产概论（修订版）.北京：教育科学出版社,2013.
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+<div class="num">04</div>
+            <div class="kw" title="传承主体">传承主体</div>											
+<div class="q" title="非物质文化遗产的传承主体是什么">非物质文化遗产的传承主体是什么</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-indent:2em;">
+非物质文化遗产的传承主体，是指某一项非物质文化遗产的优秀传承人或传承群体，即代表某项遗产深厚的民族民间文化传统，掌握着某项非物质文化遗产的知识、技艺、技术，并且具有最高水准，具有公认的代表性、权威性与影响力的个人或群体。
+</p>
+<p style="text-indent:2em;">
+来源：王文章.非物质文化遗产概论（修订版）.北京：教育科学出版社,2013.
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+<div class="num">05</div>
+            <div class="kw" title="非遗保护工作指导方针">非遗保护工作指导方针</div>											
+<div class="q" title="我国非物质文化遗产保护工作的指导方针是什么">我国非物质文化遗产保护工作的指导方针是什么</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-indent:2em;">
+保护为主、抢救第一、合理利用、传承发展。正确处理保护和利用的关系，坚持非物质文化遗产保护的真实性和整体性，有效保护的前提下合理利用，防止对非物质文化遗产的误解、歪曲或滥用。在科学认定的基础上，采取有力措施，使非物质文化遗产在全社会得到确认、尊重和弘扬。
+</p>
+<p style="text-indent:2em;">
+来源：《国务院办公厅关于加强我国非物质文化遗产保护工作的意见》（国办发〔2005〕18号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+<div class="num">06</div>
+            <div class="kw" title="非遗保护工作原则">非遗保护工作原则</div>											
+<div class="q" title="我国非物质文化遗产保护工作原则是什么">我国非物质文化遗产保护工作原则是什么</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-indent:2em;">
+<span style="text-indent:2em;">政府主导、社会参与，明确职责、形成合力;长远规划、分步实施，点面结合、讲求实效。</span>
+</p>
+<p style="text-indent:2em;">
+来源：《国务院办公厅关于加强我国非物质文化遗产保护工作的意见》（国办发〔2005〕18号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+<div class="num">07</div>
+            <div class="kw" title="国家级文化生态保护区">国家级文化生态保护区</div>											
+<div class="q" title="什么是国家级文化生态保护区">什么是国家级文化生态保护区</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-indent:2em;">
+国家级文化生态保护区是指以保护非物质文化遗产为核心，对历史文化积淀丰厚、存续状态良好，具有重要价值和鲜明特色的文化形态进行整体性保护，并经文化和旅游部同意设立的特定区域。
+</p>
+<p style="text-indent:2em;">
+来源：国家级文化生态保护区管理办法（中华人民共和国文化和旅游部令第1号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+<div class="num">08</div>
+            <div class="kw" title="非物质文化遗产生产性保护">非物质文化遗产生产性保护</div>											
+<div class="q" title="什么是非物质文化遗产生产性保护">什么是非物质文化遗产生产性保护</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-indent:2em;">
+非物质文化遗产生产性保护是指在具有生产性质的实践过程中，以保持非物质文化遗产的真实性、整体性和传承性为核心，以有效传承非物质文化遗产技艺为前提，借助生产、流通、销售等手段，将非物质文化遗产及其资源转化为文化产品的保护方式。目前，这一保护方式主要是在传统技艺、传统美术和传统医药药物炮制类非物质文化遗产领域实施。&nbsp;
+</p>
+<p style="text-indent:2em;">
+来源：《文化部关于加强非物质文化遗产生产性保护的指导意见》（文非遗发〔2012〕4号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+<div class="num">09</div>
+            <div class="kw" title="国家级项目分类">国家级项目分类</div>											
+<div class="q" title="国家级非物质文化遗产代表性项目名录的分类">国家级非物质文化遗产代表性项目名录的分类</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+2006年5月，国务院公布了第一批国家级非物质文化遗产名录，分为民间文学、民间音乐、民间舞蹈、传统戏剧、曲艺、杂技与竞技、民间美术、传统手工技艺、传统医药、民俗十大门类。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+2008年6月，国务院公布了第二批国家级非物质文化遗产名录和第一批国家级非物质文化遗产扩展项目名录，将十大门类调整为：民间文学，传统音乐，传统舞蹈，传统戏剧，曲艺，传统体育、游艺与杂技，传统美术，传统技艺，传统医药和民俗。此后国务院公布的第三批国家级非物质文化遗产名录和第四批国家级非物质文化遗产代表性项目名录沿用了调整后的类别名称。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《国务院关于公布第一批国家级非物质文化遗产名录的通知》（国发〔2006〕18号）、《国务院关于公布第二批国家级非物质文化遗产名录和第一批国家级非物质文化遗产扩展项目名录的通知》（国发〔2008〕19号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">10</div>									<div class="kw" title="国家级非遗代表性项目名录">国家级非遗代表性项目名录</div>											
+<div class="q" title="“国家级非物质文化遗产名录”何时调整为“国家级非物质文化遗产代表性项目名录”">“国家级非物质文化遗产名录”何时调整为“国家级非物质文化遗产代表性项目名录”</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+2014年11月，国务院印发《国务院关于公布第四批国家级非物质文化遗产代表性项目名录的通知》，该文件指出，按照《中华人民共和国非物质文化遗产法》的表述，将“国家级非物质文化遗产名录”名称调整为“国家级非物质文化遗产代表性项目名录”。由此，在工作实践中，“国家级非物质文化遗产项目代表性传承人”也相应调整为“国家级非物质文化遗产代表性项目代表性传承人”。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《国务院关于公布第四批国家级非物质文化遗产代表性项目名录的通知》（国发〔2014〕59号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">11</div>									<div class="kw" title="文化遗产日，文化和自然遗产日">文化遗产日，文化和自然遗产日</div>											
+<div class="q" title="“文化遗产日”与“文化和自然遗产日”的关联">“文化遗产日”与“文化和自然遗产日”的关联</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+2005年12月，国务院印发《国务院关于加强文化遗产保护的通知》，该文件指出，为了进一步加强我国文化遗产保护，继承和弘扬中华民族优秀传统文化，推动社会主义先进文化建设，国务院决定从2006年起，每年六月的第二个星期六为我国的“文化遗产日”。从2006年6月至2016年6月，“文化遗产日”共走过11个年头。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+2016年9月，国务院印发《国务院关于同意设立“文化和自然遗产日”的批复》，同意自2017年起，将每年6月第二个星期六的“文化遗产日”，调整设立为“文化和自然遗产日”。2017年6月10日，成为我国第一个“文化和自然遗产日”。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《国务院关于加强文化遗产保护的通知》（国发〔2005〕42号）、《国务院关于同意设立“文化和自然遗产日”的批复》（国函〔2016〕162号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">12</div>									<div class="kw" title="中华人民共和国非物质文化遗产法">中华人民共和国非物质文化遗产法</div>											
+<div class="q" title="《中华人民共和国非物质文化遗产法》的颁布时间与基本内容">《中华人民共和国非物质文化遗产法》的颁布时间与基本内容</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+《中华人民共和国非物质文化遗产法》（以下简称《非遗法》）由中华人民共和国第十一届全国人民代表大会常务委员会第十九次会议于2011年2月25日通过并公布，自2011年6月1日起施行。《非遗法》包括总则、非物质文化遗产的调查、非物质文化遗产代表性项目名录、非物质文化遗产的传承与传播、法律责任以及附则共6章，总计45条。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+《非遗法》是我国非物质文化保护领域的一部基本法律，它的制定、颁布和实施，表明我国的非物质文化遗产保护工作迈入了依法保护的新阶段，是非物质文化遗产保护工作史上的一个标志性事件。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源: 《中华人民共和国非物质文化遗产法》(中华人民共和国主席令第四十二号)
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">13</div>									<div class="kw" title="非遗保护“三项制度”">非遗保护“三项制度”</div>											
+<div class="q" title="我国非物质文化遗产保护的“三项制度”">我国非物质文化遗产保护的“三项制度”</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+《中华人民共和国非物质文化遗产法》规定了非物质文化遗产保护的“三项制度”，分别是调查制度、代表性项目名录制度、传承与传播制度。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《中华人民共和国非物质文化遗产法》(中华人民共和国主席令第四十二号)
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">14</div>									<div class="kw" title="我国非遗保护领域立法实践">我国非遗保护领域立法实践</div>											
+<div class="q" title="《中华人民共和国非物质文化遗产法》正式颁布前，我国非物质文化遗产保护领域的立法实践有哪些">《中华人民共和国非物质文化遗产法》正式颁布前，我国非物质文化遗产保护领域的立法实践有哪些</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+在《中华人民共和国非物质文化遗产法》（以下简称《非遗法》）正式颁布前，国家层面已有多项法律、法规涉及非物质文化遗产保护工作，以下介绍几个主要文件：
+</p>
+<p style="text-align:justify;text-indent:2em;">
+1997年5月，国务院颁布了《传统工艺美术保护条例》（以下简称《条例》），为保护我国传统工艺美术提供了法规依据。《条例》对“传统工艺美术”的定义是，“百年以上，历史悠久，技艺精湛，世代相传，有完整的工艺流程，采用天然原材料制作，具有鲜明的民族风格和地方特色，在国内外享有声誉的手工艺品种和技艺。”《条例》颁布后，保护了一大批传统工艺美术品种，命名了国家级“工艺美术大师”，增强了全社会对传统文化遗产的保护意识。应该说，在《非遗法》颁布前，《条例》是非物质文化遗产保护领域比较重要的一部法规文件。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+2005年3月，国务院办公厅印发《关于加强我国非物质文化遗产保护工作的意见》（以下简称《意见》），确定了非物质文化遗产保护工作的目标、指导方针和原则。《意见》的核心内容是建立名录体系，逐步形成有中国特色的非物质文化遗产保护制度。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+2006年10月，文化部印发《国家级非物质文化遗产保护与管理暂行办法》（以下简称《办法之一》），作为与上述国务院办公厅的《意见》相配套的部门规章，进一步细化了《意见》的有关内容，对国家级非物质文化遗产名录项目的保护单位、代表性传承人以及管理措施等，提出了具体要求；明确规定了国务院文化行政部门、省级政府文化行政部门和县级政府文化行政部门的各自职责，保护单位的条件和职责，代表性传承人的条件等内容。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+2008年6月，文化部印发《国家级非物质文化遗产项目代表性传承人认定与管理暂行办法》（以下简称《办法之二》），作为与国务院办公厅《意见》相配套、与文化部《办法之一》相衔接的部门规章，进一步细化了上述两个文件中有关传承人的内容，对认定国家级非物质文化遗产项目代表性传承人的规则、传承人的条件、传承人申请和审批的程序、传承人的义务、撤销传承人资格的办法等内容，作了明确规定。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+我国非物质文化遗产保护工作以《意见》、《办法之一》、《办法之二》等文件为制度框架，以非遗名录和非遗传承人的申报、评选、管理为基础，逐步建立和完善保护制度与传承系统，使我国的非物质文化遗产保护工作沿着法制化的轨道健康有序进行。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：王文章.非物质文化遗产概论（修订版）.北京：教育科学出版社,2013.
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">15</div>									<div class="kw" title="教科文组织非遗保护领域立法实践">教科文组织非遗保护领域立法实践</div>											
+<div class="q" title="联合国教科文组织在非物质文化遗产保护领域的立法实践有哪些">联合国教科文组织在非物质文化遗产保护领域的立法实践有哪些</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+1972年，联合国教科文组织大会通过了《保护世界文化遗产和自然遗产公约》（Convention Concerning the Protection of the World Cultural and Natural Heritage，以下简称《世界遗产公约》），主要包括文化遗产和自然遗产的定义、文化和自然遗产的国家保护和国际保护措施等条款。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+《世界遗产公约》中所说的“文化遗产”主要是指文物、建筑群、遗址等物质文化遗产。但它强调，这些物质文化遗产必须“从历史、艺术和科学观点来看具有突出的普遍价值”，这里实际已包含了某种“非物质”文化遗产的内容。可以说，《世界遗产公约》为后来保护非物质文化遗产的立法工作准备了基础。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+《世界遗产公约》首次在国际社会以国际法形式规定文化遗产的保护，极大地推动了世界各国对文化遗产的保护意识。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+1989年11月，联合国教科文组织大会通过了《保护民间创作建议案》（Recommendation on the Safeguarding of Traditional Culture and Folklore，以下简称《建议案》），从“民间创作”的定义、鉴别、保存、保护、传播、维护和国际合作七个方面做出规定。尽管《建议案》仍使用“Folklore”（民间创作或民俗等）这个概念，但其内涵与“非物质文化遗产”概念已经基本一致。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+1998年11月，联合国教科文组织审议通过了《教科文组织宣布“人类口头和非物质遗产代表作”条例》（Regulations Relating to the Proclamation by UNESCO of Masterpieces of the Oral and Intangible Heritage of Humanity，以下简称《条例》），并于2001年公布了第一批“人类口头和非物质遗产代表作”，在全世界产生重大影响。《条例》直接沿用《建议案》对“民间创作”的界定作为“人类口头和非物质遗产”概念的定义，这标志着“非物质文化遗产”的内涵在联合国法律文件中的逐步明确和定型，也说明了联合国各相关文件之间的衔接关系。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+2003年10月，联合国教科文组织通过了《保护非物质文化遗产公约》（Convention for the Safeguarding of the Intangible Cultural Heritage，以下简称《公约》），成为非物质文化保护领域最重要的国际法文件，也是《世界遗产公约》的重要补充，中国已于2004年8月正式加入该《公约》。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：王文章.非物质文化遗产概论（修订版）.北京：教育科学出版社,2013.
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">16</div>									<div class="kw" title="人类口头和非物质遗产代表作">人类口头和非物质遗产代表作</div>											
+<div class="q" title="“人类口头和非物质遗产代表作”与“人类非物质文化遗产代表作”的关系">“人类口头和非物质遗产代表作”与“人类非物质文化遗产代表作”的关系</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+联合国教科文组织《保护非物质文化遗产公约》的过渡条款中指出：委员会应把在本公约生效前宣布为“人类口头和非物质遗产代表作”的遗产纳入人类非物质文化遗产代表作名录。在公约生效后，将不再宣布其它任何人类口头和非物质遗产代表作。<span style="text-indent:2em;">2007年5月23日，“联合国教科文组织保护非物质文化遗产政府间委员会第一届特别会议”在成都举行，委员会审议通过了将90个“人类口头和非物质遗产代表作”项目纳入人类非物质文化遗产代表作名录。</span>
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《保护非物质文化遗产公约》
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">17</div>									<div class="kw" title="教科文组织非遗名录类型">教科文组织非遗名录类型</div>											
+<div class="q" title="联合国教科文组织非物质文化遗产相关名录分为几个类型">联合国教科文组织非物质文化遗产相关名录分为几个类型</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+联合国教科文组织非物质文化遗产名录（名册）分为三个类型：一是急需保护的非物质文化遗产名录；二是人类非物质文化遗产代表作名录；三是优秀实践名册，也就是最能体现《公约》原则和目标的计划、项目和活动。截至2018年底，我国共有40个项目入选上述三类名录，是入选项目最多的国家。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《保护非物质文化遗产公约》
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">18</div>									<div class="kw" title="中国非遗标识">中国非遗标识</div>											
+<div class="q" title="中国非物质文化遗产标识形式及其含义">中国非物质文化遗产标识形式及其含义</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+中国非物质文化遗产主标识形式上方采用简体中文“中国非物质文化遗产”；下方采用汉语拼音“ZHONGGUO FEIWUZHI WENHUA YICHAN”，各民族自治地区可使用当地少数民族文字，在对外交往工作中可使用英文“CHINA INTANGIBLE CULTURAL HERITAGE”或其他文字。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+中国非物质文化遗产标识外部图形为圆形，象征着循环，永不消失。内部图形为方形，与外圆对应，天圆地方，表明非物质文化遗产存在空间有极大的广阔性；图形中心造型为古陶最早出现的纹样之一鱼纹，鱼纹隐含一“文”字。“文”指非物质文化遗产，而鱼生于水，寓意中国非物质文化遗产源远流长，世代相传；图形中心，抽象的双手上下共护于“文”字，意取团结、和谐、细心呵护和保护非物质文化遗产、守护精神家园的寓意；标识图形传达出古朴和质拙感，一方面反映了非物质文化遗产的生存现状，另一方面彰显了中国政府和人民保护祖国非物质文化遗产的强烈责任心和使命感，表现出中华民族团结、奋进、向前的时代精神。主标识用于正式场合，如徽章、机构形象展示等。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+中国非物质文化遗产标识标准颜色为红色（C25M100Y100K25）和白色，可根据不同需要使用其他颜色。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《文化部办公厅关于印发中国非物质文化遗产标识管理办法的通知》（办社图发〔2007〕14号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">19</div>									<div class="kw" title="部际联席会议制度">部际联席会议制度</div>											
+<div class="q" title="什么是非物质文化遗产保护工作部际联席会议制度">什么是非物质文化遗产保护工作部际联席会议制度</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+根据《关于加强我国非物质文化遗产保护工作的意见》，我国的非物质文化遗产保护工作将由文化部门主管上升到政府主导，建立非物质文化遗产保护工作部际联席会议制度。部际联席会议由文化部（现文化和旅游部）、发展改革委、教育部、国家民委、财政部、建设部（现住房和城乡建设部）、旅游局（现文化和旅游部）、宗教局、文物局组成。部际联席会议办公室设在文化部，负责日常工作。后增加了科学技术部、工业和信息化部、商务部、国家中医药管理局和中国社会科学院。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《关于加强我国非物质文化遗产保护工作的意见》（国办发〔2005〕18号）
+</p></div>
+</div>
+</div><div class="list-item">
+                <div class="qa-title">	
+                <div class="num">20</div>									<div class="kw" title="非遗保护专项资金">非遗保护专项资金</div>											
+<div class="q" title="什么是国家非物质文化遗产保护专项资金">什么是国家非物质文化遗产保护专项资金</div>
+</div>
+<div class="qa-cont">
+<div class="t_line"><div class="bd"></div></div>								
+<div class="p"><p style="text-align:justify;text-indent:2em;">
+根据《国家非物质文化遗产保护专项资金管理办法》规定，国家非物质文化遗产保护专项资金是由中央财政设立，专项用于国家非物质文化遗产管理和保护的资金。专项资金的年度预算根据国家非物质文化遗产保护工作总体规划、年度工作计划及国家财力情况核定。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+专项资金分为中央本级专项资金和中央对地方专项转移支付资金，按照开支范围分为组织管理费和保护补助费。中央本级专项资金包括文化部本级组织管理费和中央部门所属单位保护补助费，中央对地方专项转移支付资金为中央财政对各省、自治区、直辖市保护补助费。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+组织管理费是指组织开展非物质文化遗产保护工作和管理工作所发生的支出，具体包括：规划编制、调查研究、宣传出版、培训、数据库建设、咨询支出等。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+保护补助费是指补助国家级非物质文化遗产代表性项目、国家级代表性传承人、国家级文化生态保护区开展调查、记录、保存、研究、传承、传播等保护性活动发生的支出。具体包括：1.国家级非物质文化遗产代表性项目补助费，主要补助国家级非物质文化遗产代表性项目相关的调查研究、抢救性记录和保存、传承活动、理论及技艺研究、出版、展示推广、民俗活动支出等。2.国家级代表性传承人补助费，用于补助国家级代表性传承人开展传习活动的支出。3.国家级文化生态保护区补助费，主要补助国家级文化生态保护区相关的调查研究、规划编制、传习设施租借或修缮、普及教育、宣传支出等。
+</p>
+<p style="text-align:justify;text-indent:2em;">
+来源：《国家非物质文化遗产保护专项资金管理办法》（财教〔2012〕45号）
+</p></div>
+</div>
+
+            </div>
+        </div>
+    </div>
+        
+        </div>
+
+        <div id="homePage" class="content-section">
+            <div class="slideshow-container">
+                <img class="slideshow-image" src="https://github.com/hsy-03/-/blob/main/%E8%8B%8F%E7%BB%A3.jpg?raw=true" onclick="window.location.href='苏绣（无锡精微绣）介绍.html'">
+                <img class="slideshow-image" src="https://github.com/hsy-03/-/blob/main/%E6%83%A0%E5%B1%B1%E6%B3%A5%E4%BA%BA.jpg?raw=true" onclick="window.location.href='惠山泥人介绍.html'">
+                <img class="slideshow-image" src="https://github.com/hsy-03/-/blob/main/%E8%8B%8F%E7%BB%A3%EF%BC%88%E4%BF%AE%E6%AD%A3%E7%89%88%EF%BC%89.jpg?raw=true" onclick="window.location.href='竹刻介绍.html'">
+                <img class="slideshow-image" src="https://p5.itc.cn/q_70/images03/20210824/c72ba0973ccf4d0e808c63fc9f08db68.jpeg" onclick="window.location.href='剪纸介绍.html'">
+            </div>
+            <div class="slideshow-text">
+                <h2>国家级传统美术类非物质文化遗产</h2>
+                <p>保护和传承中华民族非遗瑰宝</p>  
+            </div>
+    
+            <!-- 新增四个区块 -->
+            <div class="heritage-grid">
+                <div class="heritage-item" onclick="window.location.href='苏绣（无锡精微绣）介绍.html'">
+                    <img src="https://github.com/hsy-03/-/blob/main/%E8%8B%8F%E7%BB%A32.jpg?raw=true" alt="非遗项目1">
+                    <div class="heritage-info">
+                        <h3>苏绣（无锡精微绣）</h3>
+                        <p>分&emsp;&emsp;类：传统美术</p>
+                        <p>申报地区：中国江苏省无锡市</p>
+                        <p>认证级别：国家级</p>
+                    </div>
+                </div>
+                <div class="heritage-item" onclick="window.location.href='惠山泥人介绍.html'">
+                    <img src="https://github.com/hsy-03/-/blob/main/%E6%83%A0%E5%B1%B1%E6%B3%A5%E4%BA%BA2.jpg?raw=true" alt="非遗项目2">
+                    <div class="heritage-info">
+                        <h3>惠山泥人</h3>
+                        <p>分&emsp;&emsp;类：传统美术</p>
+                        <p>申报地区：中国江苏省无锡市</p>
+                        <p>认证级别：国家级</p>
+                    </div>
+                </div>
+                <div class="heritage-item" onclick="window.location.href='竹刻介绍.html'">
+                    <img src="https://github.com/hsy-03/-/blob/main/%E7%AB%B9%E5%88%BB2.jpg?raw=true" alt="非遗项目3">
+                    <div class="heritage-info">
+                        <h3>竹刻（无锡留青竹刻）</h3>
+                        <p>分&emsp;&emsp;类：传统美术</p>
+                        <p>申报地区：中国江苏省无锡市</p>
+                        <p>认证级别：国家级</p>
+                    </div>
+                </div>
+                <div class="heritage-item" onclick="window.location.href='剪纸介绍.html'">
+                    <img src="https://github.com/hsy-03/-/blob/main/%E5%8D%97%E4%BA%AC%E5%89%AA%E7%BA%B82.png?raw=true" alt="非遗项目4">
+                    <div class="heritage-info">
+                        <h3>剪纸（南京剪纸）</h3>
+                        <p>分&emsp;&emsp;类：传统美术</p>
+                        <p>申报地区：中国江苏省南京市</p>
+                        <p>认证级别：国家级</p>
+                    </div>
+                </div>
+            </div>
+           <!-- 新增的四个区块 -->
+           <div class="heritage-grid" style="margin-top: 50px;">
+            <div class="heritage-item" onclick="window.location.href='桃花坞木版年画介绍.html'">
+                <img src="https://github.com/hsy-03/-/blob/main/%E6%A1%83%E8%8A%B1%E5%9D%9E%E6%9C%A8%E7%89%88%E5%B9%B4%E7%94%BB.jpg?raw=true" alt="桃花坞木版年画">
+                <div class="heritage-info">
+                    <h3>桃花坞木版年画</h3>
+                    <p>分&emsp;&emsp;类：传统美术</p>
+                    <p>申报地区：中国江苏省苏州市</p>
+                    <p>认证级别：国家级</p>
+                </div>
+            </div>
+            <div class="heritage-item" onclick="window.location.href='苏绣介绍.html'">
+                <img src="https://imgs.699pic.com/images/500/803/790.jpg!seo.v1" alt="苏绣">
+                <div class="heritage-info">
+                    <h3>苏绣</h3>
+                    <p>分&emsp;&emsp;类：传统美术</p>
+                    <p>申报地区：中国江苏省苏州市</p>
+                    <p>认证级别：国家级</p>
+                </div>
+            </div>
+            <div class="heritage-item" onclick="window.location.href='香包（徐州香包）介绍.html'">
+                <img src="https://github.com/hsy-03/-/blob/main/%E9%A6%99%E5%8C%85%EF%BC%88%E5%BE%90%E5%B7%9E%E9%A6%99%E5%8C%85%EF%BC%89.png?raw=true" alt="香包（徐州香包）">
+                <div class="heritage-info">
+                    <h3>香包（徐州香包）</h3>
+                    <p>分&emsp;&emsp;类：传统美术</p>
+                    <p>申报地区：中国江苏省徐州市</p>
+                    <p>认证级别：国家级</p>
+                </div>
+            </div>
+            <div class="heritage-item" onclick="window.location.href='灯彩（秦淮灯彩）介绍.html'">
+                <img src="https://github.com/hsy-03/-/blob/main/%E7%81%AF%E5%BD%A9%EF%BC%88%E7%A7%A6%E6%B7%AE%E7%81%AF%E5%BD%A9%EF%BC%89.jpg?raw=true" alt="灯彩（秦淮灯彩）">
+                <div class="heritage-info">
+                    <h3>灯彩（秦淮灯彩）</h3>
+                    <p>分&emsp;&emsp;类：传统美术</p>
+                    <p>申报地区：中国江苏省镇江市句容市</p>
+                    <p>认证级别：国家级</p>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+    <div id="mapSection" class="content-section" style="display: none;">
+        <div id="mapContainer"></div>
+        <div id="typeFilter">
+            <select id="heritageType" class="layui-select">
+                <option value="all">全部显示</option>
+                <option value="传统美术">传统美术</option>
+                <option value="传统音乐">传统音乐</option>
+                <option value="曲艺">曲艺</option>
+            </select>
+        </div>
+       
+        <div id="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: red;"></div>
+                <span>传统美术</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: blue;"></div>
+                <span>传统音乐</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: black;"></div>
+                <span>曲艺</span>
+            </div>
+        </div>
+    </div>
+
+        <div id="infoManagement" class="content-section" style="display: none;">
+            <div class="layui-btn-group" style="margin-bottom: 1px;">
+                <button onclick="addNewHeritage()">添加新遗产</button>
+            </div>
+            <table id="heritageTable" lay-filter="heritageTable"></table>
+        </div>
+
+        
+        
+
+        <div id="resultsDisplay" class="content-section" style="display: none;">
+            <div class="results-container">
+                <div class="results-sidebar">
+                    <ul class="layui-nav layui-nav-tree" lay-filter="resultsDisplayNav">
+                        <li class="layui-nav-item layui-this"><a href="javascript:;" data-target="canalProtection">中华人民共和国非物质文化遗产法（中华人民共和国主席令第四十二号）</a></li>
+                        <li class="layui-nav-item"><a href="javascript:;" data-target="videoDisplay">全国人大常委会关于批准《保护非物质文化遗产公约》的决定（2004）</a></li>
+                        <li class="layui-nav-item"><a href="javascript:;" data-target="creativeProducts">保护非物质文化遗产公约（2003）</a></li>
+                        <li class="layui-nav-item"><a href="javascript:;" data-target="promotionDesign">实施《保护非物质文化遗产公约》的业务指南（2022年修订版）</a></li>
+                        <li class="layui-nav-item"><a href="javascript:;" data-target="crossResearch">保护非物质文化遗产的伦理原则（2016）</a></li>
+                        <li class="layui-nav-item"><a href="javascript:;" data-target="posterDesign">加强文化遗产保护传承 弘扬中华优秀传统文化</a></li>
+                    </ul>
+                </div>
+                <div class="results-content">
+                    <div id="canalProtection" class="results-section">
+                        <div class="article-title">
+                            <div class="h24">
+                                
+                                    中华人民共和国非物质文化遗产法（中华人民共和国主席令第四十二号）							
+                            </div>
+                                                    <div class="sub">
+                                <span class="sub-item" title="中国人大网"><img src="/Public/static/themes/image/temp/png34.png" alt="" class="ico">来源：中国人大网</span>														<span class="sub-item"><img src="/Public/static/themes/image/temp/png36.png" alt="" class="ico">创建时间：<span class="en">2011-02-28 09:44:00</span></span>						</div>
+                            <div class="t_line"><div class="bd"></div></div>
+                        </div>
+    
+                        <div class="article-cont">
+                            <p style="text-indent:2em;text-align:center;">
+        <span style="font-size:18px;"><strong>中华人民共和国主席令</strong></span><br />
+    &nbsp; &nbsp; &nbsp; 第四十二号
+    </p>
+    <p style="text-indent:2em;text-align:justify;">
+        《中华人民共和国非物质文化遗产法》已由中华人民共和国第十一届全国人民代表大会常务委员会第十九次会议于2011年2月25日通过，现予公布，自2011年6月1日起施行。
+    </p>
+    <p style="text-indent:2em;text-align:right;">
+        中华人民共和国主席 胡锦涛
+    </p>
+    <p style="text-indent:2em;text-align:right;">
+        2011年2月25日
+    </p>
+    <p style="text-indent:2em;text-align:right;">
+        <br />
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <span style="font-size:18px;"><strong>中华人民共和国非物质文化遗产法</strong></span><br />
+    （2011年2月25日第十一届全国人民代表大会常务委员会第十九次会议通过）
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <strong>目 录</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第一章 总 则
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二章 非物质文化遗产的调查
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三章 非物质文化遗产代表性项目名录
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四章 非物质文化遗产的传承与传播
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第五章 法律责任
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第六章 附 则
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <strong>第一章 总 则</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第一条&nbsp;为了继承和弘扬中华民族优秀传统文化，促进社会主义精神文明建设，加强非物质文化遗产保护、保存工作，制定本法。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二条&nbsp;本法所称非物质文化遗产，是指各族人民世代相传并视为其文化遗产组成部分的各种传统文化表现形式，以及与传统文化表现形式相关的实物和场所。包括：
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （一）传统口头文学以及作为其载体的语言；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （二）传统美术、书法、音乐、舞蹈、戏剧、曲艺和杂技；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （三）传统技艺、医药和历法；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （四）传统礼仪、节庆等民俗；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （五）传统体育和游艺；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （六）其他非物质文化遗产。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        属于非物质文化遗产组成部分的实物和场所，凡属文物的，适用《中华人民共和国文物保护法》的有关规定。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三条&nbsp;国家对非物质文化遗产采取认定、记录、建档等措施予以保存，对体现中华民族优秀传统文化，具有历史、文学、艺术、科学价值的非物质文化遗产采取传承、传播等措施予以保护。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四条&nbsp;保护非物质文化遗产，应当注重其真实性、整体性和传承性，有利于增强中华民族的文化认同，有利于维护国家统一和民族团结，有利于促进社会和谐和可持续发展。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第五条&nbsp;使用非物质文化遗产，应当尊重其形式和内涵。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        禁止以歪曲、贬损等方式使用非物质文化遗产。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第六条&nbsp;县级以上人民政府应当将非物质文化遗产保护、保存工作纳入本级国民经济和社会发展规划，并将保护、保存经费列入本级财政预算。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        国家扶持民族地区、边远地区、贫困地区的非物质文化遗产保护、保存工作。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第七条&nbsp;国务院文化主管部门负责全国非物质文化遗产的保护、保存工作；县级以上地方人民政府文化主管部门负责本行政区域内非物质文化遗产的保护、保存工作。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        县级以上人民政府其他有关部门在各自职责范围内，负责有关非物质文化遗产的保护、保存工作。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第八条&nbsp;县级以上人民政府应当加强对非物质文化遗产保护工作的宣传，提高全社会保护非物质文化遗产的意识。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第九条&nbsp;国家鼓励和支持公民、法人和其他组织参与非物质文化遗产保护工作。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十条&nbsp;对在非物质文化遗产保护工作中做出显著贡献的组织和个人，按照国家有关规定予以表彰、奖励。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <strong>第二章 非物质文化遗产的调查</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十一条&nbsp;县级以上人民政府根据非物质文化遗产保护、保存工作需要，组织非物质文化遗产调查。非物质文化遗产调查由文化主管部门负责进行。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        县级以上人民政府其他有关部门可以对其工作领域内的非物质文化遗产进行调查。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十二条&nbsp;文化主管部门和其他有关部门进行非物质文化遗产调查，应当对非物质文化遗产予以认定、记录、建档，建立健全调查信息共享机制。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        文化主管部门和其他有关部门进行非物质文化遗产调查，应当收集属于非物质文化遗产组成部分的代表性实物，整理调查工作中取得的资料，并妥善保存，防止损毁、流失。其他有关部门取得的实物图片、资料复制件，应当汇交给同级文化主管部门。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十三条&nbsp;文化主管部门应当全面了解非物质文化遗产有关情况，建立非物质文化遗产档案及相关数据库。除依法应当保密的外，非物质文化遗产档案及相关数据信息应当公开，便于公众查阅。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十四条&nbsp;公民、法人和其他组织可以依法进行非物质文化遗产调查。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十五条&nbsp;境外组织或者个人在中华人民共和国境内进行非物质文化遗产调查，应当报经省、自治区、直辖市人民政府文化主管部门批准；调查在两个以上省、自治区、直辖市行政区域进行的，应当报经国务院文化主管部门批准；调查结束后，应当向批准调查的文化主管部门提交调查报告和调查中取得的实物图片、资料复制件。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        境外组织在中华人民共和国境内进行非物质文化遗产调查，应当与境内非物质文化遗产学术研究机构合作进行。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十六条&nbsp;进行非物质文化遗产调查，应当征得调查对象的同意，尊重其风俗习惯，不得损害其合法权益。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十七条&nbsp;对通过调查或者其他途径发现的濒临消失的非物质文化遗产项目，县级人民政府文化主管部门应当立即予以记录并收集有关实物，或者采取其他抢救性保存措施；对需要传承的，应当采取有效措施支持传承。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <strong>第三章 非物质文化遗产代表性项目名录</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十八条&nbsp;国务院建立国家级非物质文化遗产代表性项目名录，将体现中华民族优秀传统文化，具有重大历史、文学、艺术、科学价值的非物质文化遗产项目列入名录予以保护。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        省、自治区、直辖市人民政府建立地方非物质文化遗产代表性项目名录，将本行政区域内体现中华民族优秀传统文化，具有历史、文学、艺术、科学价值的非物质文化遗产项目列入名录予以保护。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第十九条&nbsp;省、自治区、直辖市人民政府可以从本省、自治区、直辖市非物质文化遗产代表性项目名录中向国务院文化主管部门推荐列入国家级非物质文化遗产代表性项目名录的项目。推荐时应当提交下列材料：
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （一）项目介绍，包括项目的名称、历史、现状和价值；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （二）传承情况介绍，包括传承范围、传承谱系、传承人的技艺水平、传承活动的社会影响；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （三）保护要求，包括保护应当达到的目标和应当采取的措施、步骤、管理制度；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （四）有助于说明项目的视听资料等材料。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十条&nbsp;公民、法人和其他组织认为某项非物质文化遗产体现中华民族优秀传统文化，具有重大历史、文学、艺术、科学价值的，可以向省、自治区、直辖市人民政府或者国务院文化主管部门提出列入国家级非物质文化遗产代表性项目名录的建议。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十一条&nbsp;相同的非物质文化遗产项目，其形式和内涵在两个以上地区均保持完整的，可以同时列入国家级非物质文化遗产代表性项目名录。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十二条&nbsp;国务院文化主管部门应当组织专家评审小组和专家评审委员会，对推荐或者建议列入国家级非物质文化遗产代表性项目名录的非物质文化遗产项目进行初评和审议。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        初评意见应当经专家评审小组成员过半数通过。专家评审委员会对初评意见进行审议，提出审议意见。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        评审工作应当遵循公开、公平、公正的原则。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十三条&nbsp;国务院文化主管部门应当将拟列入国家级非物质文化遗产代表性项目名录的项目予以公示，征求公众意见。公示时间不得少于二十日。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十四条&nbsp;国务院文化主管部门根据专家评审委员会的审议意见和公示结果，拟订国家级非物质文化遗产代表性项目名录，报国务院批准、公布。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十五条&nbsp;国务院文化主管部门应当组织制定保护规划，对国家级非物质文化遗产代表性项目予以保护。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        省、自治区、直辖市人民政府文化主管部门应当组织制定保护规划，对本级人民政府批准公布的地方非物质文化遗产代表性项目予以保护。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        制定非物质文化遗产代表性项目保护规划，应当对濒临消失的非物质文化遗产代表性项目予以重点保护。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十六条&nbsp;对非物质文化遗产代表性项目集中、特色鲜明、形式和内涵保持完整的特定区域，当地文化主管部门可以制定专项保护规划，报经本级人民政府批准后，实行区域性整体保护。确定对非物质文化遗产实行区域性整体保护，应当尊重当地居民的意愿，并保护属于非物质文化遗产组成部分的实物和场所，避免遭受破坏。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        实行区域性整体保护涉及非物质文化遗产集中地村镇或者街区空间规划的，应当由当地城乡规划主管部门依据相关法规制定专项保护规划。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十七条&nbsp;国务院文化主管部门和省、自治区、直辖市人民政府文化主管部门应当对非物质文化遗产代表性项目保护规划的实施情况进行监督检查；发现保护规划未能有效实施的，应当及时纠正、处理。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <strong>第四章 非物质文化遗产的传承与传播</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十八条&nbsp;国家鼓励和支持开展非物质文化遗产代表性项目的传承、传播。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第二十九条&nbsp;国务院文化主管部门和省、自治区、直辖市人民政府文化主管部门对本级人民政府批准公布的非物质文化遗产代表性项目，可以认定代表性传承人。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        非物质文化遗产代表性项目的代表性传承人应当符合下列条件：
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （一）熟练掌握其传承的非物质文化遗产；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （二）在特定领域内具有代表性，并在一定区域内具有较大影响；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （三）积极开展传承活动。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        认定非物质文化遗产代表性项目的代表性传承人，应当参照执行本法有关非物质文化遗产代表性项目评审的规定，并将所认定的代表性传承人名单予以公布。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十条&nbsp;县级以上人民政府文化主管部门根据需要，采取下列措施，支持非物质文化遗产代表性项目的代表性传承人开展传承、传播活动：
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （一）提供必要的传承场所；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （二）提供必要的经费资助其开展授徒、传艺、交流等活动；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （三）支持其参与社会公益性活动；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （四）支持其开展传承、传播活动的其他措施。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十一条&nbsp;非物质文化遗产代表性项目的代表性传承人应当履行下列义务：
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （一）开展传承活动，培养后继人才；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （二）妥善保存相关的实物、资料；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （三）配合文化主管部门和其他有关部门进行非物质文化遗产调查；
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （四）参与非物质文化遗产公益性宣传。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        非物质文化遗产代表性项目的代表性传承人无正当理由不履行前款规定义务的，文化主管部门可以取消其代表性传承人资格，重新认定该项目的代表性传承人；丧失传承能力的，文化主管部门可以重新认定该项目的代表性传承人。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十二条&nbsp;县级以上人民政府应当结合实际情况，采取有效措施，组织文化主管部门和其他有关部门宣传、展示非物质文化遗产代表性项目。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十三条&nbsp;国家鼓励开展与非物质文化遗产有关的科学技术研究和非物质文化遗产保护、保存方法研究，鼓励开展非物质文化遗产的记录和非物质文化遗产代表性项目的整理、出版等活动。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十四条&nbsp;学校应当按照国务院教育主管部门的规定，开展相关的非物质文化遗产教育。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        新闻媒体应当开展非物质文化遗产代表性项目的宣传，普及非物质文化遗产知识。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十五条&nbsp;图书馆、文化馆、博物馆、科技馆等公共文化机构和非物质文化遗产学术研究机构、保护机构以及利用财政性资金举办的文艺表演团体、演出场所经营单位等，应当根据各自业务范围，开展非物质文化遗产的整理、研究、学术交流和非物质文化遗产代表性项目的宣传、展示。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十六条&nbsp;国家鼓励和支持公民、法人和其他组织依法设立非物质文化遗产展示场所和传承场所，展示和传承非物质文化遗产代表性项目。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十七条&nbsp;国家鼓励和支持发挥非物质文化遗产资源的特殊优势，在有效保护的基础上，合理利用非物质文化遗产代表性项目开发具有地方、民族特色和市场潜力的文化产品和文化服务。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        开发利用非物质文化遗产代表性项目的，应当支持代表性传承人开展传承活动，保护属于该项目组成部分的实物和场所。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        县级以上地方人民政府应当对合理利用非物质文化遗产代表性项目的单位予以扶持。单位合理利用非物质文化遗产代表性项目的，依法享受国家规定的税收优惠。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <strong>第五章 法律责任</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十八条&nbsp;文化主管部门和其他有关部门的工作人员在非物质文化遗产保护、保存工作中玩忽职守、滥用职权、徇私舞弊的，依法给予处分。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第三十九条&nbsp;文化主管部门和其他有关部门的工作人员进行非物质文化遗产调查时侵犯调查对象风俗习惯，造成严重后果的，依法给予处分。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四十条&nbsp;违反本法规定，破坏属于非物质文化遗产组成部分的实物和场所的，依法承担民事责任；构成违反治安管理行为的，依法给予治安管理处罚。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四十一条&nbsp;境外组织违反本法第十五条规定的，由文化主管部门责令改正，给予警告，没收违法所得及调查中取得的实物、资料；情节严重的，并处十万元以上五十万元以下的罚款。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        境外个人违反本法第十五条第一款规定的，由文化主管部门责令改正，给予警告，没收违法所得及调查中取得的实物、资料；情节严重的，并处一万元以上五万元以下的罚款。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四十二条&nbsp;违反本法规定，构成犯罪的，依法追究刑事责任。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <strong>第六章 附 则</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四十三条&nbsp;建立地方非物质文化遗产代表性项目名录的办法，由省、自治区、直辖市参照本法有关规定制定。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四十四条&nbsp;使用非物质文化遗产涉及知识产权的，适用有关法律、行政法规的规定。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        对传统医药、传统工艺美术等的保护，其他法律、行政法规另有规定的，依照其规定。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        第四十五条&nbsp;本法自2011年6月1日起施行。
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <span style="text-align:right;">　　</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <span style="text-align:right;">文件链接：<a href="http://www.gov.cn/flfg/2011-02/25/content_1857449.htm" target="_self" title="" textvalue="">http://www.gov.cn/flfg/2011-02/25/content_1857449.htm</a></span> 
+    </p>
+                   
+                </div>
+            </div>
+         
+         <div id="videoDisplay" class="results-section" style="display:none;">
+            <div class="article-title">
+                <div class="h24">
+                    全国人大常委会关于批准《保护非物质文化遗产公约》的决定（2004）							
+                </div>
+                <div class="sub">
+                    <span class="sub-item" title="新华网"><img src="/Public/static/themes/image/temp/png34.png" alt="" class="ico">来源：新华网</span>
+                    <span class="sub-item"><img src="/Public/static/themes/image/temp/png36.png" alt="" class="ico">创建时间：<span class="en">2006-04-28 10:41:00</span></span>
+                </div>
+                <div class="t_line"><div class="bd"></div></div>
+            </div>
+        
+            <div class="article-cont">
+                <h1>
+                <br />
+                </h1>
+                <p style="text-align:center;">
+                <span style="font-size:18px;"><strong>全国人大常委会关于批准《保护非物质文化遗产公约》的决定</strong></span>
+                </p>
+                <p>
+                <br />
+                </p>
+                <p>
+                &nbsp; &nbsp; &nbsp; &nbsp;全国人大常委会关于批准《保护非物质文化遗产公约》的决定。（2004年8月28日通过）
+                </p>
+                <p>
+                &nbsp; &nbsp; &nbsp; &nbsp;第十届全国人民代表大会常务委员会第十一次会议决定：批准于2003年11月3日在第32届联合国教科文组织大会上通过的《保护非物质文化遗产公约》；同时声明，在中华人民共和国政府另行通知前，《保护非物质文化遗产公约》暂不适用于中华人民共和国香港特别行政区。（新华网北京2004年8月28日电）&nbsp;
+                </p>
+                <p>
+                <br />
+                </p>
+               
+                <p>
+                <br />
+                </p>
+                <p>
+                <br />
+                </p>
+                <p>
+                <br />
+                </p>
+                <div class="t_line"><div class="bd"></div></div>
+            </div>
+            
+            <div class="article-nav">
+                <!--<a href="#" class="t_more">返回</a>-->
+            </div>
+        </div>
+
+                    <div id="creativeProducts" class="results-section" style="display:none;">
+                        <div class="article-title">
+                            <div class="h24">
+                                
+                                    保护非物质文化遗产公约（2003）							
+                            </div>
+                                                    <div class="sub">
+                                                                                        <span class="sub-item"><img src="/Public/static/themes/image/temp/png36.png" alt="" class="ico">创建时间：<span class="en">2003-12-08 16:03:00</span></span>						</div>
+                            <div class="t_line"><div class="bd"></div></div>
+                        </div>
+    
+                        <div class="article-cont">
+                            <p style="text-align:left;text-indent:2em;">
+        <span style="text-align:justify;text-indent:2em;">联合国教育、科学及文化组织（以下简称教科文组织）大会于2003年9月29日至10月17日在巴黎举行的第32届会议，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">参照</span></em><span style="text-align:justify;text-indent:2em;">现有的国际人权文书，尤其是1948年的《世界人权宣言》以及1966年的《经济、社会及文化权利国际公约》和《公民权利和政治权利国际公约》，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">考虑</span></em><span style="text-align:justify;text-indent:2em;">到1989年的《保护民间创作建议书》、2001年的《教科文组织世界文化多样性宣言》和2002年第三次文化部长圆桌会议通过的《伊斯坦布尔宣言》强调非物质文化遗产的重要性，它是文化多样性的熔炉，又是可持续发展的保证，</span>
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <span style="text-align:justify;text-indent:2em;"><em>考虑</em>到非物质文化遗产与物质文化遗产和自然遗产之间的内在相互依存关系，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <span style="text-align:justify;text-indent:2em;"><em>承认</em>全球化和社会转型进程在为各群体之间开展新的对话创造条件的同时，也与不容忍现象一样，使非物质文化遗产面临损坏、消失和破坏的严重威胁，在缺乏保护资源的情况下，这种威胁尤为严重，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">意识</span><span style="text-align:justify;text-indent:2em;">到</span></em><span style="text-align:justify;text-indent:2em;">保护人类非物质文化遗产是普遍的意愿和共同关心的事项，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <span style="text-align:justify;text-indent:2em;"><em>承认</em>各社区，尤其是原住民、各群体，有时是个人，在非物质文化遗产的生产、保护、延续和再创造方面发挥着重要作用，从而为丰富文化多样性和人类的创造性做出贡献，注意到教科文组织在制定保护文化遗产的准则性文件，尤其是1972年的《保护世界文化和自然遗产公约》方面所做的具有深远意义的工作，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">还注意到</span></em><span style="text-align:justify;text-indent:2em;">迄今尚无有约束力的保护非物质文化遗产的多边文件，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">考虑到</span></em><span style="text-align:justify;text-indent:2em;">国际上现有的关于文化遗产和自然遗产的协定、建议书和决议需要有非物质文化遗产方面的新规定有效地予以充实和补充，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">考虑到</span></em><span style="text-align:justify;text-indent:2em;">必须提高人们，尤其是年轻一代对非物质文化遗产及其保护的重要意义的认识，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">考虑到</span></em><span style="text-align:justify;text-indent:2em;">国际社会应当本着互助合作的精神与本公约缔约国一起为保护此类遗产做出贡献，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">忆及</span></em><span style="text-align:justify;text-indent:2em;">教科文组织有关非物质文化遗产的各项计划，尤其是“宣布人类口头遗产和非物质遗产代表作”计划，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <em><span style="text-align:justify;text-indent:2em;">认为</span></em><span style="text-align:justify;text-indent:2em;">非物质文化遗产是密切人与人之间的关系以及他们之间进行交流和了解的要素，它的作用是不可估量的，</span> 
+    </p>
+    <p style="text-align:left;text-indent:2em;">
+        <span style="text-align:justify;text-indent:2em;">于2003年10月17日通过本公约。</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong>第一章&nbsp;</strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong>总 则&nbsp;</strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong>第一条：本公约的宗旨</strong></em>&nbsp;
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        本公约的宗旨如下:&nbsp;
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （一）保护非物质文化遗产；&nbsp;
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）尊重有关社区、群体和个人的非物质文化遗产；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）在地方、国家和国际一级提高对非物质文化遗产及其相互欣赏的重要性的意识；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（四）开展国际合作及提供国际援助。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二条：定义</span></strong><span style="text-indent:0em;">&nbsp;</span></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">在本公约中：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）“非物质文化遗产”，指被各社区、群体，有时是个人，视为其文化遗产组成部分的各种社会实践、观念表述、表现形式、知识、技能以及相关的工具、实物、手工艺品和文化场所。这种非物质文化遗产世代相传，在各社区和群体适应周围环境以及与自然和历史的互动中，被不断地再创造，为这些社区和群体提供认同感和持续感，从而增强对文化多样性和人类创造力的尊重。在本公约中，只考虑符合现有的国际人权文件，各社区、群体和个人之间相互尊重的需要和顺应可持续发展的非物质文化遗产。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）按上述第（一）项的定义，“非物质文化遗产”包括以下方面:&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 1.口头传统和表现形式，包括作为非物质文化遗产媒介的语言；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 2.表演艺术；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 3.社会实践、仪式、节庆活动；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 4.有关自然界和宇宙的知识和实践；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 5.传统手工艺。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）“保护”指确保非物质文化遗产生命力的各种措施，包括这种遗产各个方面的确认、立档、研究、保存、保护、宣传、弘扬、传承（特别是通过正规和非正规教育）和振兴。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（四）“缔约国”指受本公约约束且本公约在它们之间也通用的国家。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（五）本公约经必要修改对根据第三十三条所述之条件成为其缔约方之领土也适用。在此意义上，“缔约国”亦指这些领土。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三条：与其他国际文书的关系&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">本公约的任何条款均不得解释为：</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）改变与任一非物质文化遗产直接相关的世界遗产根据1972年《保护世界文化和自然遗产公约》所享有的地位，或降低其受保护的程度；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）影响缔约国从其作为缔约方的任何有关知识产权或使用生物和生态资源的国际文书所获得的权利和所负有的义务。</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <span style="text-indent:0em;"><strong>第二章&nbsp;</strong></span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">公约的有关机关&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第四条：缔约国大会</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、兹建立缔约国大会，下称“大会”。大会为本公约的最高权力机关。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、大会每两年举行一次常会。如若它作出此类决定或政府间保护非物质文化遗产委员会或至少三分之一的缔约国提出要求，可举行特别会议。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、大会应通过自己的议事规则。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第五条：政府间保护非物质文化遗产委员会&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、兹在教科文组织内设立政府间保护非物质文化遗产委员会，下称“委员会”。在本公约依照第三十四条的规定生效之后,委员会由参加大会之缔约国选出的</span><span style="text-indent:0em;">18个缔约国的代表组成。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、在本公约缔约国的数目达到50个之后，委员会委员国的数目将增至24个。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><span style="text-indent:0em;"><strong>第六条：委员会委员国的选举和任期</strong>&nbsp;</span></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、委员会委员国的选举应符合公平的地理分配和轮换原则。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、委员会委员国由本公约缔约国大会选出，任期四年。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、但第一次选举当选的半数委员会委员国的任期为两年。这些国家在第一次选举后抽签指定。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">四、大会每两年对半数委员会委员国进行换届。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">五、大会还应选出填补空缺席位所需的委员会委员国。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">六、委员会委员国不得连选连任两届。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">七、委员会委员国应选派在非物质文化遗产各领域有造诣的人士为其代表。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第七条：委员会的职能</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">在不妨碍本公约赋予委员会的其它职权的情况下，其职能如下：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）宣传公约的目标，鼓励并监督其实施情况；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）就好的做法和保护非物质文化遗产的措施提出建议；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）按照第二十五条的规定，拟订利用基金资金的计划并提交大会批准；</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（四）按照第二十五条的规定，努力寻求增加其资金的方式方法，并为此采取必要的措施；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（五）拟订实施公约的业务指南并提交大会批准；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（六）根据第二十九条的规定，审议缔约国的报告并将报告综述提交大会；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（七）根据委员会制定的、大会批准的客观遴选标准，审议缔约国提出的申请并就以下事项作出决定：</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 1. 列入第十六条、第十七条和第十八条述及的名录和提名；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 2. 按照第二十二条的规定提供国际援助。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第八条：委员会的工作方法</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、委员会对大会负责。它向大会报告自己的所有活动和决定。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、委员会以其委员的三分之二多数通过自己的议事规则。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、委员会可设立其认为执行任务所需的临时特设咨询机构。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">四、委员会可邀请在非物质文化遗产各领域确有专长的任何公营或私营机构以及任何自然人参加会议，就任何具体的问题向其请教。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第九条：咨询组织的认证</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、委员会应建议大会认证在非物质文化遗产领域确有专长的非政府组织具有向委员会提供咨询意见的能力。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、委员会还应向大会就此认证的标准和方式提出建议。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十条：秘书处</span></strong><span style="text-indent:0em;">&nbsp;</span></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、委员会由教科文组织秘书处协助。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、秘书处起草大会和委员会文件及其会议的议程草案和确保其决定的执行。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">第三章&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">在国家一级保护非物质文化遗产&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十一条：缔约国的作用&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">各缔约国应该:&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）采取必要措施确保其领土上的非物质文化遗产受到保护；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）在第二条第（三）项提及的保护措施内，由各社区、群体和有关非政府组织参与，确认和确定其领土上的各种非物质文化遗产。</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十二条：清单&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、为了使其领土上的非物质文化遗产得到确认以便加以保护，各缔约国应根据自己的国情拟订一份或数份关于这类遗产的清单，并应定期加以更新。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、各缔约国在按第二十九条的规定定期向委员会提交报告时，应提供有关这些清单的情况。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十三条：其他保护措施</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">为了确保其领土上的非物质文化遗产得到保护、弘扬和展示，各缔约国应努力做到：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）制定一项总的政策，使非物质文化遗产在社会中发挥应有的作用，并将这种遗产的保护纳入规划工作；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）指定或建立一个或数个主管保护其领土上的非物质文化遗产的机构；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）鼓励开展有效保护非物质文化遗产，特别是濒危非物质文化遗产的科学、技术和艺术研究以及方法研究；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（四）采取适当的法律、技术、行政和财政措施，以便:&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 1.促进建立或加强培训管理非物质文化遗产的机构以及通过为这种遗产提供活动和表现的场所和空间，促进这种遗产的传承；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 2.确保对非物质文化遗产的享用，同时对享用这种遗产的特殊方面的习俗做法予以尊重；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 3.建立非物质文化遗产文献机构并创造条件促进对它的利用。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十四条：教育、宣传和能力培养</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">各缔约国应竭力采取种种必要的手段，以便：</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）使非物质文化遗产在社会中得到确认、尊重和弘扬，主要通过：</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 1.向公众，尤其是向青年进行宣传和传播信息的教育计划；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 2.有关社区和群体的具体的教育和培训计划；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 3.保护非物质文化遗产，尤其是管理和科研方面的能力培养活动；</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 4.非正规的知识传播手段。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）不断向公众宣传对这种遗产造成的威胁以及根据本公约所开展的活动；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）促进保护表现非物质文化遗产所需的自然场所和纪念地点的教育。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十五条：社区、群体和个人的参与&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">缔约国在开展保护非物质文化遗产活动时，应努力确保创造、延续和传承这种遗产的社区、群体，有时是个人的最大限度的参与，并吸收他们积极地参与有关的管理。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">第四章&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">在国际一级保护非物质文化遗产</span></strong><span style="text-indent:0em;">&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十六条：人类非物质文化遗产代表作名录&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、为了扩大非物质文化遗产的影响，提高对其重要意义的认识和从尊重文化多样性的角度促进对话，委员会应该根据有关缔约国的提名编辑、更新和公布人类非物质文化遗产代表作名录。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、委员会拟订有关编辑、更新和公布此代表作名录的标准并提交大会批准。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十七条：急需保护的非物质文化遗产名录</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、为了采取适当的保护措施，委员会编辑、更新和公布急需保护的非物质文化遗产名录，并根据有关缔约国的要求将此类遗产列入该名录。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、委员会拟订有关编辑、更新和公布此名录的标准并提交大会批准。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、委员会在极其紧急的情况（其具体标准由大会根据委员会的建议加以批准）下，可与有关缔约国协商将有关的遗产列入第一款所提之名录。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十八条：保护非物质文化遗产的计划、项目和活动&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、在缔约国提名的基础上，委员会根据其制定的、大会批准的标准，兼顾发展中国家的特殊需要，定期遴选并宣传其认为最能体现本公约原则和目标的国家、分地区或地区保护非物质文化遗产的计划、项目和活动。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、为此, 委员会接受、审议和批准缔约国提交的关于要求国际援助拟订此类提名的申请。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、委员会按照它确定的方式，配合这些计划、项目和活动的实施，随时推广有关经验。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">第五章&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">国际合作与援助&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第十九条：合作</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、在本公约中，国际合作主要是交流信息和经验，采取共同的行动，以及建立援助缔约国保护非物质文化遗产工作的机制。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、在不违背国家法律规定及其习惯法和习俗的情况下，缔约国承认保护非物质文化遗产符合人类的整体利益，保证为此目的在双边、分地区、地区和国际各级开展合作。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十条：国际援助的目的</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">可为如下目的提供国际援助：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）保护列入《急需保护的非物质文化遗产名录》的遗产；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）按照第十一条和第十二条的精神编制清单；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）支持在国家、分地区和地区开展的保护非物质文化遗产的计划、项目和活动；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（四）委员会认为必要的其他一切目的。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十一条：国际援助的形式</span></strong><span style="text-indent:0em;">&nbsp;</span></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">第七条的业务指南和第二十四条所指的协定对委员会向缔约国提供援助作了规定，可采取的形式如下：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）对保护这种遗产的各个方面进行研究；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）提供专家和专业人员；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）培训各类所需人员；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（四）制订准则性措施或其它措施；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（五）基础设施的建立和营运；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（六）提供设备和技能；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（七）其它财政和技术援助形式，包括在必要时提供低息贷款和捐助。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十二条：国际援助的条件</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、委员会确定审议国际援助申请的程序和具体规定申请的内容，包括打算采取的措施、必需开展的工作及预计的费用。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、如遇紧急情况，委员会应对有关援助申请优先审议。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、委员会在作出决定之前，应进行其认为必要的研究和咨询。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十三条：国际援助的申请</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、各缔约国可向委员会递交国际援助的申请，保护在其领土上的非物质文化遗产。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、此类申请亦可由两个或数个缔约国共同提出。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、申请应包含第二十二条第一款规定的所有资料和所有必要的文件。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十四条：受援缔约国的任务</span></strong></em><span style="text-indent:0em;">&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、根据本公约的规定，国际援助应依据受援缔约国与委员会之间签署的协定来提供。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、受援缔约国通常应在自己力所能及的范围内分担国际所援助的保护措施的费用。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、受援缔约国应向委员会报告关于使用所提供的保护非物质文化遗产援助的情况。</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">第六章&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">非物质文化遗产基金&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十五条：基金的性质和资金来源&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、兹建立一项“保护非物质文化遗产基金”，下称“基金”。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、根据教科文组织《财务条例》的规定，此项基金为信托基金。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、基金的资金来源包括：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）缔约国的纳款；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）教科文组织大会为此所拨的资金；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（三）以下各方可能提供的捐款、赠款或遗赠：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 1.其他国家；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 2.联合国系统各组织和各署（特别是联合国开发计划署）以及其他国际组织；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">&nbsp; &nbsp; 3.公营或私营机构和个人。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（四）基金的资金所得的利息；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（五）为本基金募集的资金和开展活动之所得；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（六）委员会制定的基金条例所许可的所有其它资金。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">四、委员会对资金的使用视大会的方针来决定。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">五、委员会可接受用于某些项目的一般或特定目的的捐款及其它形式的援助，只要这些项目己获委员会的批准。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">六、对基金的捐款不得附带任何与本公约所追求之目标不相符的政治、经济或其它条件。</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十六条：缔约国对基金的纳款&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、在不妨碍任何自愿补充捐款的情况下，本公约缔约国至少每两年向基金纳一次款，其金额由大会根据适用于所有国家的统一的纳款额百分比加以确定。缔约国大会关于此问题的决定由出席会议并参加表决，但未作本条第二款中所述声明的缔约国的多数通过。在任何情况下，此纳款都不得超过缔约国对教科文组织正常预算纳款的百分之一。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、但是，本公约第三十二条或第三十三条中所指的任何国家均可在交存批准书、接受书、核准书或加入书时声明不受本条第一款规定的约束。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、已作本条第二款所述声明的本公约缔约国应努力通知联合国教育、科学及文化组织总干事收回所作声明。但是，收回声明之举不得影响该国在紧接着的下一届大会开幕之日前应缴的纳款。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">四、为使委员会能够有效地规划其工作，已作本条第二款所述声明的本公约缔约国至少应每两年定期纳一次款，纳款额应尽可能接近它们按本条第一款规定应交的数额。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">五、凡拖欠当年和前一日历年的义务纳款或自愿捐款的本公约缔约国不能当选为委员会委员，但此项规定不适用于第一次选举。已当选为委员会委员的缔约国的任期应在本公约第六条规定的选举之时终止。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十七条：基金的自愿补充捐款&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">除了第二十六条所规定的纳款，希望提供自愿捐款的缔约国应及时通知委员会以使其能对相应的活动作出规划。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十八条：国际筹资运动</span></strong><span style="text-indent:0em;">&nbsp;</span></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">缔约国应尽力支持在教科文组织领导下为该基金发起的国际筹资运动。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">第七章&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">报告&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第二十九条：缔约国的报告</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">缔约国应按照委员会确定的方式和周期向其报告它们为实施本公约而通过的法律、规章条例或采取的其它措施的情况。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十条：委员会的报告</span></strong><span style="text-indent:0em;">&nbsp;</span></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、委员会应在其开展的活动和第二十九条提及的缔约国报告的基础上，向每届大会提交报告。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、该报告应提交教科文组织大会。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">第八章&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">过渡条款&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十一条：与宣布人类口头和非物质遗产代表作的关系</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、委员会应把在本公约生效前宣布为“人类口头和非物质遗产代表作”的遗产纳入人类非物质文化遗产代表作名录。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、把这些遗产纳入人类非物质文化遗产代表作名录绝不是预设按第十六条第二款将</span><span style="text-indent:0em;">确定的今后列入遗产的标准。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、在本公约生效后，将不再宣布其它任何人类口头和非物质遗产代表作。</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">第九章&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <strong><span style="text-indent:0em;">最后条款&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十二条：批准、接受或核准</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、本公约须由教科文组织会员国根据各自的宪法程序予以批准、接受或核准。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、批准书、接受书或核准书应交存教科文组织总干事。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十三条：加入&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、所有非教科文组织会员国的国家，经本组织大会邀请，均可加入本公约。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、没有完全独立，但根据联合国大会第1514(XV)号决议被联合国承认为充分享有内部自治，并且有权处理本公约范围内的事宜，包括有权就这些事宜签署协议的地区也可加入本公约。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、加入书应交存教科文组织总干事。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十四条：生效</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">本公约在第三十份批准书、接受书、核准书或加入书交存之日起的三个月后生效，但只涉及在该日或该日之前交存批准书、接受书、核准书或加入书的国家。对其它缔约国来说，本公约则在这些国家的批准书、接受书、核准书或加入书交存之日起的三个月之后生效。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十五条：联邦制或非统一立宪制&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">对实行联邦制或非统一立宪制的缔约国实行下述规定：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）在联邦或中央立法机构的法律管辖下实施本公约各项条款的国家的联邦或中央政府的义务与非联邦国家的缔约国的义务相同；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）在构成联邦，但按照联邦立宪制无须采取立法手段的各个州、成员国、省或行政区的法律管辖下实施本公约的各项条款时，联邦政府应将这些条款连同其建议一并通知各个州、成员国、省或行政区的主管当局。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十六条：退出</span></strong></em><span style="text-indent:0em;">&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、各缔约国均可宣布退出本公约。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、退约应以书面退约书的形式通知教科文组织总干事。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、退约在接到退约书十二个月之后生效。在退约生效日之前不得影响退约国承担的财政义务。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十七条：保管人的职责</span></strong></em><span style="text-indent:0em;">&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">教科文组织总干事作为本公约的保管人，应将第三十二条和第三十三条规定交存的所有</span><span style="text-indent:0em;">批准书、接受书、核准书或加入书和第三十六条规定的退约书的情况通告本组织各会员国、第三十三条提到的非本组织会员国的国家和联合国。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十八条：修订&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">一、任何缔约国均可书面通知总干事，对本公约提出修订建议。总干事应将此通知转发给所有缔约国。如在通知发出之日起六个月之内，至少有一半的缔约国回复赞成此要求，总干事应将此建议提交下一届大会讨论，决定是否通过。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">二、对本公约的修订须经出席并参加表决的缔约国三分之二多数票通过。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">三、对本公约的修订一旦通过, 应提交缔约国批准、接受、核准或加入。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">四、对于那些已批准、接受、核准或加入修订的缔约国来说，本公约的修订在三分之二的缔约国交存本条第三款所提及的文书之日起三个月之后生效。此后, 对任何批准、接受、核准或加入修订的缔约国来说, 在其交存批准书、接受书、核准书或加入书之日起三个月之后，本公约的修订即生效。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">五、第三款和第四款所确定的程序对有关委员会委员国数目的第五条的修订不适用。此类修订一经通过即生效。&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">六、在修订依照本条第四款的规定生效之后成为本公约缔约国的国家如无表示异议，应：&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（一）被视为修订的本公约的缔约方；&nbsp;</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">（二）但在与不受这些修订约束的任何缔约国的关系中，仍被视为未经修订之公约的缔约方。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第三十九条：有效文本</span></strong></em><strong><span style="text-indent:0em;">&nbsp;</span></strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">本公约用英文、阿拉伯文、中文、西班牙文、法文和俄文拟定，六种文本具有同等效力。&nbsp;</span> 
+    </p>
+    <p style="text-align:center;text-indent:2em;">
+        <em><strong><span style="text-indent:0em;">第四十条：登记&nbsp;</span></strong></em> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">根据《联合国宪章》第一百零二条的规定，本公约应按教科文组织总干事的要求交联合国秘书处登记。</span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;"><br />
+    </span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <span style="text-indent:0em;">文件链接：<a href="http://www.unesco.org/culture/ich/en/convention" target="_blank" title="">http://www.unesco.org/culture/ich/en/convention</a></span> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        文件下载：<span style="line-height:16px;">保护非物质文化遗</span><span style="line-height:16px;">产公约</span> 
+    </p>
+                                                            <div class="load_ld"><a class="fa2" href="/Uploads/File/2019/03/12/u5c8733d5ee6ea.pdf" target="_blank" >保护非物质文化遗产公约</a></div>						<div class="t_line"><div class="bd"></div></div>
+                        </div>
+                        
+                       
+                    </div>
+                    <div id="promotionDesign" class="results-section" style="display:none;">
+                        <div class="article-title">
+                            <div class="h24">
+                                
+                                    实施《保护非物质文化遗产公约》的业务指南（2022年修订版）							
+                            </div>
+                                                    <div class="sub">
+                                <span class="sub-item" title="联合国教科文组织官方网站"><img src="/Public/static/themes/image/temp/png34.png" alt="" class="ico">来源：联合国教科文组织官方网站</span>														<span class="sub-item"><img src="/Public/static/themes/image/temp/png36.png" alt="" class="ico">创建时间：<span class="en">2023-06-13 15:56:00</span></span>						</div>
+                            <div class="t_line"><div class="bd"></div></div>
+                        </div>
+    
+                        <div class="article-cont">
+                            <p>
+        原文链接：https://ich.unesco.org/en/directives?tdsourcetag=s_pctim_aiomsg
+    </p>
+                                                            <div class="load_ld"><a class="fa2" href="https://www.ihchina.cn/Uploads/File/2023/07/12/u64ae627c3662a.pdf" target="_blank" >实施《保护非物质文化遗产公约》的业务指南（2022年修订版）</a></div>						<div class="t_line"><div class="bd"></div></div>
+                        </div>
+                        
+                      
+                    </div>
+                    <div id="crossResearch" class="results-section" style="display:none;">
+                        <div class="article-title">
+                            <div class="h24">
+                                
+                                    保护非物质文化遗产的伦理原则（2016）							
+                            </div>
+                                                    <div class="sub">
+                                <span class="sub-item" title="联合国教科文组织官方网站"><img src="/Public/static/themes/image/temp/png34.png" alt="" class="ico">来源：联合国教科文组织官方网站</span>														<span class="sub-item"><img src="/Public/static/themes/image/temp/png36.png" alt="" class="ico">创建时间：<span class="en">2016-12-16 16:47:00</span></span>						</div>
+                            <div class="t_line"><div class="bd"></div></div>
+                        </div>
+    
+                        <div class="article-cont">
+                            <p style="text-align:justify;text-indent:2em;">
+        根据2003年《非物质文化遗产保护公约》及现有保护人权和土著人民权利的国际准则性文件的精神，制定本保护非物质文化遗产伦理原则。该等伦理原则代表了一系列范围广泛的理想原则，被广泛地认为构成直接或间接影响非物质文化遗产的政府、组织和个人的优秀实践，以确保其存续力，由此确认其对和平和可持续发展的贡献。该等伦理原则是对2003年《非物质文化遗产保护公约》、实施《公约》业务指南和各国立法框架的补充，旨在作为制定适合当地和部门情况的具体伦理准则和工具的基础。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        1）社区、群体和或有关个人应在保护其自身非物质文化遗产中发挥首要作用。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        2）<strong>社区、群体和有关个人</strong>为确保非物质文化遗产存续力而继续进行必要实践、表示、表达、知识和技能<strong>的权利</strong>应予以承认和尊重。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        3）在国家之间以及社区、群体和有关个人之间的互动中，应尽量<strong>相互尊重</strong>并尊重和相互欣赏非物质文化遗产。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        4）与创造、保护、维持和传播非物质文化遗产的社区、群体和有关个人之间的所有互动，应以<strong>透明</strong>合作、对话、谈判和协商为特征，并以<strong>自愿、事先、持续和知情同意为前提。</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        5）社区、群体和有关个人对其存在对非物质文化遗产表达有必要的工具、物品、人工制品、文化和自然空间和回忆地点的<strong>享有</strong>应予以保证，包括在存在武装冲突的情况下。对享有非物质文化遗产特殊方面的的习俗做法应予以充分尊重，即使这种尊重可能限制更大范围的公众享有。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        6）各社区、群体或个人应评定其自身非物质文化遗产的价值，该非物质文化遗产<strong>不应受制于外部对其价值的判断。</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        7）创造非物质文化遗产的社区、群体和个人应 <strong>从保护</strong>该遗产所产生的精神和物质利益中获益，特别是社区成员或他人对其进行的使用、研究、文件编制、推介或改编。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        8）<strong>非物质文化遗产的动态和鲜活本质</strong>应持续获得尊重。真实性和排他性不应构成对非物质文化遗产保护的担忧和障碍。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        9）社区、群体、地方、国家和跨国组织和个人应对可能影响非物质文化遗产存续力或相关社区的任何行动所造成的直接或间接、短期或长期、潜在和确定<strong>影响</strong>进行仔细评估。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        10）社区、群体和相关个人应在确定何物对其非物质文化遗产构成<strong>威胁</strong>（包括脱离情境、商品化和失实陈述）以及确定如何防止并减轻该等威胁时发挥重要作用。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        11）<strong>应充分尊重文化多样性</strong>及社区、群体和个人的特性。就社区、群体和个人承认的价值及文化规范敏感性而言，在设计和实施保护措施时应特别考虑 <strong>性别</strong>平等、青年参与和<strong>对族裔特性的尊重</strong>。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        12）非物质文化遗产保护对<strong>人类具有普遍意义</strong>，因此应通过双边、次区域、区域和国际各方合作进行；但是，不应将社区、群体和有关个人同其自身非物质文化遗产相分离。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        文件链接：<a href="https://ich.unesco.org/doc/src/2003_Convention-Ethical_principles-ZH.pdf" target="_blank">https://ich.unesco.org/doc/src/2003_Convention-Ethical_principles-ZH.pdf</a>
+    </p>
+                                                    <div class="t_line"><div class="bd"></div></div>
+                        </div>
+                        
+                        <div class="article-nav">
+                            <!--<a href="#" class="t_more">返回</a>-->
+                                                </div>
+                    </div>
+                
+            
+            
+                   
+                    <div id="posterDesign" class="results-section" style="display:none;">
+                        <div class="article-title">
+                            <div class="h24">
+                                
+                                    加强文化遗产保护传承  弘扬中华优秀传统文化							
+                            </div>
+                                                    <div class="sub">
+                                <span class="sub-item" title="《求是》（第8期）"><img src="/Public/static/themes/image/temp/png34.png" alt="" class="ico">来源：《求是》（第8期）</span>							<span class="sub-item" title="习近平"><img src="/Public/static/themes/image/temp/png35.png" alt="" class="ico">作者：习近平</span>							<span class="sub-item"><img src="/Public/static/themes/image/temp/png36.png" alt="" class="ico">创建时间：<span class="en">2024-04-16 09:44:00</span></span>						</div>
+                            <div class="t_line"><div class="bd"></div></div>
+                        </div>
+    
+                        <div class="article-cont">
+                            <p style="text-align:center;">
+        <strong>加强文化遗产保护传承 &nbsp;弘扬中华优秀传统文化※</strong> 
+    </p>
+    <p style="text-align:center;">
+        <strong>习近平</strong> 
+    </p>
+    <p style="text-align:center;">
+        <strong>一</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        宣传阐释中国特色，要讲清楚每个国家和民族的历史传统、文化积淀、基本国情不同，其发展道路必然有着自己的特色；讲清楚中华文化积淀着中华民族最深沉的精神追求，是中华民族生生不息、发展壮大的丰厚滋养；讲清楚中华优秀传统文化是中华民族的突出优势，是我们最深厚的文化软实力；讲清楚中国特色社会主义植根于中华文化沃土、反映中国人民意愿、适应中国和时代发展进步要求，有着深厚历史渊源和广泛现实基础。中华民族创造了源远流长的中华文化，中华民族也一定能够创造出中华文化新的辉煌。独特的文化传统，独特的历史命运，独特的基本国情，注定了我们必然要走适合自己特点的发展道路。对我国传统文化，对国外的东西，要坚持古为今用、洋为中用，去粗取精、去伪存真，经过科学的扬弃后使之为我所用。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2013年8月19日在全国宣传思想工作会议上的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>二</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        我们的城市有许多历史记忆，特别是一些历史悠久的老城区，是最宝贵的东西，不能因为浮躁、无知而破坏掉。有的城市把真古董拆了建假古迹，我看到一份材料，说全国有三十多个城市已经或正在谋划搞古城重建，搞什么潘金莲故居、阿房宫重建！还有一些地方热衷于改老地名，喜欢起一些洋气一点的地名，如“曼哈顿”、“威尼斯”、“加州1886”、“玛斯兰德”等，五花八门，与中国历史文化协调吗？不仅群众看得一头雾水、莫名其妙，而且也割断了地名文脉、不利于传承我们的民族文化。更何况有些情况也是违法的，我国地名管理条例实施细则明确规定不以外国人名、地名命名我国地名。传承文化不是要简单复古，城市建设会不断融入现代元素，但必须同步保护和弘扬传统优秀文化，延续城市历史文脉。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2013年12月12日在中央城镇化工作会议上的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>三</strong>
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        中华文化是我们提高国家文化软实力最深厚的源泉，是我们提高国家文化软实力的重要途径。要使中华民族最基本的文化基因与当代文化相适应、与现代社会相协调，以人们喜闻乐见、具有广泛参与性的方式推广开来，把跨越时空、超越国度、富有永恒魅力、具有当代价值的文化精神弘扬起来，把继承传统优秀文化又弘扬时代精神、立足本国又面向世界的当代中国文化创新成果传播出去。要系统梳理传统文化资源，让收藏在禁宫里的文物、陈列在广阔大地上的遗产、书写在古籍里的文字都活起来。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2013年12月30日在十八届中央政治局第十二次集体学习时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>四</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        每一种文明都延续着一个国家和民族的精神血脉，既需要薪火相传、代代守护，更需要与时俱进、勇于创新。中国人民在实现中国梦的进程中，将按照时代的新进步，推动中华文明创造性转化和创新性发展，激活其生命力，把跨越时空、超越国度、富有永恒魅力、具有当代价值的文化精神弘扬起来，让收藏在博物馆里的文物、陈列在广阔大地上的遗产、书写在古籍里的文字都活起来，让中华文明同世界各国人民创造的丰富多彩的文明一道，为人类提供正确的精神指引和强大的精神动力。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2014年3月27日在法国巴黎联合国教科文组织总部的演讲）
+    </p>
+    <p style="text-align:center;">
+        <strong>五</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        我讲过，城市建设，要让居民望得见山、看得见水、记得住乡愁。“记得住乡愁”，就要保护弘扬中华优秀传统文化，延续城市历史文脉，保留中华文化基因。要保护好前人留下的文化遗产，包括文物古迹，历史文化名城、名镇、名村，历史街区、历史建筑、工业遗产，以及非物质文化遗产，不能搞“拆真古迹、建假古董”那样的蠢事。既要保护古代建筑，也要保护近代建筑；既要保护单体建筑，也要保护街巷街区、城镇格局；既要保护精品建筑，也要保护具有浓厚乡土气息的民居及地方特色的民俗。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2015年12月20日在中央城市工作会议上的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>六</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        文物承载灿烂文明，传承历史文化，维系民族精神，是老祖宗留给我们的宝贵遗产，是加强社会主义精神文明建设的深厚滋养。保护文物功在当代、利在千秋。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2016年3月23日关于做好文物工作的批示）
+    </p>
+    <p style="text-align:center;">
+        <strong>七</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        中华民族历史悠久，中华文明源远流长，中华文化博大精深，一个博物馆就是一所大学校。博物馆建设要注重特色。向海之路是一个国家发展的重要途径，这里围绕古代海上丝绸之路陈列的文物都是历史、是文化。要让文物说话，让历史说话，让文化说话。要加强文物保护和利用，加强历史研究和传承，使中华优秀传统文化不断发扬光大。要增强文化自信，在传承中华优秀传统文化基础上发展社会主义先进文化，加快建设社会主义文化强国。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2017年4月19日在广西考察时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>八</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        我们要深入挖掘、继承、创新优秀传统乡土文化。要让有形的乡村文化留得住，充分挖掘具有农耕特质、民族特色、地域特点的物质文化遗产，加大对古镇、古村落、古建筑、民族村寨、文物古迹、农业遗迹的保护力度。要让活态的乡土文化传下去，深入挖掘民间艺术、戏曲曲艺、手工技艺、民族服饰、民俗活动等非物质文化遗产。要把保护传承和开发利用有机结合起来，把我国农耕文明优秀遗产和现代文明要素结合起来，赋予新的时代内涵，让中华优秀传统文化生生不息，让我国历史悠久的农耕文明在新时代展现其魅力和风采。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2017年12月28日在中央农村工作会议上的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>九</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        我国是统一的多民族国家，中华民族是多民族不断交流交往交融而形成的。中华文明植根于和而不同的多民族文化沃土，历史悠久，是世界上唯一没有中断、发展至今的文明。要重视少数民族文化保护和传承，支持和扶持《格萨（斯）尔》等非物质文化遗产，培养好传承人，一代一代接下来、传下去。要引导人们树立正确的历史观、国家观、民族观、文化观，不断巩固各族人民对伟大祖国的认同、对中华民族的认同、对中国特色社会主义道路的认同。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2019年7月15日在内蒙古考察时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        研究和弘扬敦煌文化，既要深入挖掘敦煌文化和历史遗存背后蕴含的哲学思想、人文精神、价值理念、道德规范等，推动中华优秀传统文化创造性转化、创新性发展，更要揭示蕴含其中的中华民族的文化精神、文化胸怀和文化自信，为新时代坚持和发展中国特色社会主义提供精神支撑。要加强对国粹传承和非物质文化遗产保护的支持和扶持，加强对少数民族历史文化的研究，铸牢中华民族共同体意识。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2019年8月19日在敦煌研究院座谈时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十一</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        考古遗迹和历史文物是历史的见证，必须保护好、利用好。要建立健全历史文化遗产资源资产管理制度，建设国家文物资源大数据库，加强相关领域文物资源普查、名录公布的统筹指导，强化技术支撑，引导社会参与。要把历史文化遗产保护放在第一位，同时要合理利用，使其在提供公共文化服务、满足人民精神文化生活需求方面充分发挥作用。要健全不可移动文物保护机制，把文物保护管理纳入国土空间规划编制和实施。要制定“先考古、后出让”的制度设计和配套政策，对可能存在历史文化遗存的土地，在依法完成考古调查、勘探、发掘前不得使用。要深刻汲取国内外重大文物灾害事故教训，督察落实主体责任，强化隐患整治，增强历史文化遗产防护能力。要加强执法督察，规范举报流程，严厉打击文物犯罪。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2020年9月28日在十九届中央政治局第二十三次集体学习时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十二</strong>
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        革命文物承载党和人民英勇奋斗的光荣历史，记载中国革命的伟大历程和感人事迹，是党和国家的宝贵财富，是弘扬革命传统和革命文化、加强社会主义精神文明建设、激发爱国热情、振奋民族精神的生动教材。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        加强革命文物保护利用，弘扬革命文化，传承红色基因，是全党全社会的共同责任。各级党委和政府要把革命文物保护利用工作列入重要议事日程，加大工作力度，切实把革命文物保护好、管理好、运用好，发挥好革命文物在党史学习教育、革命传统教育、爱国主义教育等方面的重要作用，激发广大干部群众的精神力量，信心百倍为全面建设社会主义现代化国家、实现中华民族伟大复兴中国梦而奋斗。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2021年3月对革命文物工作的指示）
+    </p>
+    <p style="text-align:center;">
+        <strong>十三</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        红色资源是我们党艰辛而辉煌奋斗历程的见证，是最宝贵的精神财富，一定要用心用情用力保护好、管理好、运用好。一是要加强科学保护。红色资源是不可再生、不可替代的珍贵资源，保护是首要任务。要本着对历史负责、对人民负责的态度，深入开展红色资源专项调查，加强红色遗址、革命文物保护工作，统筹好抢救性保护和预防性保护、本体保护和周边保护、单点保护和集群保护等。二是要开展系统研究。统筹研究力量，强化研究规划，积极开展革命史料的抢救、征集和研究工作，加强革命历史研究，深入挖掘红色资源背后的思想内涵，准确把握党的历史发展的主题主线、主流本质，旗帜鲜明反对和抵制历史虚无主义。三是要打造精品展陈。坚持政治性、思想性、艺术性相统一，把好导向、聚焦主题，用史实说话，着力打造高质量精品展陈，增强表现力、传播力、影响力，生动传播红色文化。四是要强化教育功能。围绕革命、建设、改革各个历史时期的重大事件、重大节点，研究确定一批重要标识地，讲好党的故事、革命的故事、英雄的故事，彰显时代特色，使之成为教育人、激励人、塑造人的大学校。要设计符合青少年认知特点的教育活动，建设富有特色的革命传统教育、爱国主义教育、青少年思想道德教育基地，引导他们从小在心里树立红色理想。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2021年6月25日在十九届中央政治局第三十一次集体学习时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十四</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        要加强文物保护利用和文化遗产保护传承，提高文物研究阐释和展示传播水平，让文物真正活起来，成为加强社会主义精神文明建设的深厚滋养，成为扩大中华文化国际影响力的重要名片。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2021年11月24日在中央全面深化改革委员会第二十二次会议上的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十五</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        历史文化遗产承载着中华民族的基因和血脉，不仅属于我们这一代人，也属于子孙万代。要敬畏历史、敬畏文化、敬畏生态，全面保护好历史文化遗产，统筹好旅游发展、特色经营、古城保护，筑牢文物安全底线，守护好前人留给我们的宝贵财富。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2022年1月27日在山西晋中考察时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十六</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        让更多文物和文化遗产活起来，营造传承中华文明的浓厚社会氛围。文物和文化遗产承载着中华民族的基因和血脉，是不可再生、不可替代的中华优秀文明资源。我们要积极推进文物保护利用和文化遗产保护传承，挖掘文物和文化遗产的多重价值，传播更多承载中华文化、中国精神的价值符号和文化产品。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        中国共产党人不是历史虚无主义者、文化虚无主义者，不能数典忘祖、妄自菲薄。各级领导干部都要敬畏历史、敬畏优秀传统文化，重视文物保护利用和文化遗产保护传承工作，为历史和考古工作者开展研究、学习深造、研修交流提供更多政策支持。要营造传承中华文明的浓厚社会氛围，广泛宣传中华文明探源工程等研究成果，教育引导群众特别是青少年更好认识和认同中华文明，增强做中国人的志气、骨气、底气。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2022年5月27日在十九届中央政治局第三十九次集体学习时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十七</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        中华文明博大精深、源远流长，是由各民族优秀文化百川汇流而成。要加强中华民族共同体历史、中华民族多元一体格局的研究，充分挖掘和有效运用新疆各民族交往的历史事实、考古实物、文化遗存，讲清楚新疆自古以来就是我国不可分割的一部分和多民族聚居地区，新疆各民族是中华民族大家庭血脉相连、命运与共的重要成员。要加强非物质文化遗产保护传承，把各民族优秀传统文化发扬光大。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2022年7月13日在新疆考察时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十八</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        殷墟出土的甲骨文为我们保存3000年前的文字，把中国信史向上推进了约1000年。殷墟我向往已久，这次来是想更深地学习理解中华文明，古为今用，为更好建设中华民族现代文明提供借鉴。中国的汉文字非常了不起，中华民族的形成和发展离不开汉文字的维系。在这方面，考古事业居功至伟。考古工作要继续重视和加强，继续深化中华文明探源工程。中华文明源远流长，从未中断，塑造了我们伟大的民族，这个民族还会伟大下去的。要通过文物发掘、研究保护工作，更好地传承优秀传统文化。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2022年10月28日在河南安阳考察时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>十九</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        亚洲是人类文明重要发祥地，孕育并保有着极其丰富的文化遗产，为世界文明发展史书写了浓墨重彩的篇章。2019年，我在亚洲文明对话大会上倡议开展亚洲文化遗产保护行动。4年来，各方积极响应、共同努力，在古代文明研究、联合考古、古迹修复、博物馆交流等方面开展务实合作，为保护人类文明精华作出亚洲新贡献。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        亚洲文化遗产保护联盟的成立，有利于加强亚洲文化遗产保护，深化亚洲文明交流，繁荣世界文明百花园，为人类文明进步贡献力量。中国愿在联盟框架下，同亚洲各国携手加强文化遗产保护经验交流，积极推动文化遗产领域国际合作，构建全球文明对话合作网络，促进各国人民相知相亲，共同推动人类文明发展进步。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2023年4月25日致亚洲文化遗产保护联盟大会的贺信）
+    </p>
+    <p style="text-align:center;">
+        <strong>二十</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        博物馆有很多宝贵文物甚至“国宝”，它们实证了我国百万年的人类史、一万年的文化史、五千多年的文明史，要深入实施中华文明探源工程，把中国文明历史研究引向深入。要认真贯彻落实党中央关于坚持保护第一、加强管理、挖掘价值、有效利用、让文物活起来的工作要求，全面提升文物保护利用和文化遗产保护传承水平。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2023年5月16日在山西运城考察时的讲话）
+    </p>
+    <p style="text-align:center;">
+        <strong>二十一</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        中华民族具有悠久的优秀传统文化，自古就有开放包容、兼收并蓄的文化胸怀，中华文明历来赞赏不同文明间的相互理解和尊重。北京历史悠久，文脉绵长，是中华文明连续性、创新性、统一性、包容性、和平性的有力见证。中国将更好发挥北京作为历史古都和全国文化中心的优势，加强同全球各地的文化交流，共同推动文化繁荣发展、文化遗产保护、文明交流互鉴，践行全球文明倡议，为推动构建人类命运共同体注入深厚持久的文化力量。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2023年9月14日致2023北京文化论坛的贺信）
+    </p>
+    <p style="text-align:center;">
+        <strong>二十二</strong> 
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        世界由丰富多彩的文明构成，中国是有着世界上最古老历史和文化的国家之一。中国愿同联合国教科文组织开展更紧密合作，不断提高遗产保护能力和水平，促进各种文明交流互鉴、包容合作，助力世界和平，推动构建人类命运共同体。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        （2023年9月28日在会见联合国教科文组织总干事阿祖莱时的讲话）
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        <br />
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        ※这是习近平总书记2013年8月至2023年9月期间有关加强文化遗产保护传承，弘扬中华优秀传统文化重要论述的节录。
+    </p>
+    <p style="text-align:justify;text-indent:2em;">
+        原文链接：<span style="text-indent:2em;">http://www.qstheory.cn/dukan/qs/2024-04/15/c_1130109121.htm</span> 
+    </p>
+                                                    <div class="t_line"><div class="bd"></div></div>
+                        </div>
+                        
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div>
+
+    
+
+    <!-- 放大显示图片和视频的窗口 -->
+    <div id="mediaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('mediaModal').style.display='none'">&times;</span>
+            <div id="mediaContent"></div>
+        </div>
+    </div>
+
+   
+  
+    <script>
+
+layui.use(['jquery'], function() {
+            var $ = layui.jquery;
+
+            // 点击标题展开/收起内容
+            $('.qa-title').click(function() {
+                $(this).toggleClass('cur');
+                $(this).next('.qa-cont').slideToggle();
+            });
+        });
+        
+         
+        layui.use(['element', 'jquery'], function() {
+        var element = layui.element;
+        var $ = layui.jquery;
+
+        // 成果展示侧边栏切换
+        function switchResultsSection(target) {
+            $('.results-section').hide();
+            $('#' + target).show();
+
+            // 更新侧边栏active状态
+            $('.layui-nav-item').removeClass('layui-this');
+            $('.layui-nav-item a[data-target="' + target + '"]').parent().addClass('layui-this');
+        }
+
+        // 绑定侧边栏点击事件
+        $('.layui-nav-tree').on('click', 'a', function() {
+            var target = $(this).data('target');
+            switchResultsSection(target);
+        });
+
+        // 显示指定的部分
+        window.showSection = function(sectionId) {
+            $('.content-section').hide();
+            $('#' + sectionId).show();
+
+            // 如果显示的是成果展示界面，默认显示第一个子页面
+            if (sectionId === 'resultsDisplay') {
+                switchResultsSection('canalProtection');
+            }
+        }
+
+        // 页面加载完成后，默认显示首页
+        $(document).ready(function() {
+            showSection('homePage');
+        });
+    });
+        // 幻灯片功能
+        let slideIndex = 0;
+        const slides = document.getElementsByClassName("slideshow-image");
+        slides[0].classList.add('active');
+
+        function showSlides() {
+            slides[slideIndex].classList.remove('active');
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add('active');
+            slides[slideIndex].style.animation = 'slideLeft 1s ease-in-out';
+            setTimeout(() => {
+                slides[slideIndex].style.animation = '';
+            }, 1000);
+            setTimeout(showSlides, 5000); // 每5秒切换一次
+        }
+
+        setTimeout(showSlides, 5000);
+
+        // 初始化显示首页
+        showSection('homePage');
+
+
+        var map, table;
+        var markers = [];
+        var heritageData;
+        var heatmap;
+        var isHeatmapVisible = false;
+       
+
+
+       // 初始化高德地图
+       var map = new AMap.Map('mapContainer', {
+            resizeEnable: true,
+            center: [120.24199,31.713738],
+            zoom: 8
+        });
+        
+        
+        var markers = [];
+
+        // 修改添加标记到地图的函数
+        function addMarkers(data) {
+            markers = data.map(item => {
+                var markerIcon = {
+                    size: new AMap.Size(25, 34),
+                    image: getMarkerImage(item.type),
+                    imageSize: new AMap.Size(25, 34)
+                };
+                
+                var marker = new AMap.Marker({
+                    position: item.coordinates,
+                    map: map,
+                    title: item.name,
+                    icon: new AMap.Icon(markerIcon),
+                    offset: new AMap.Pixel(-12.5, -34)
+                });
+                
+                marker.setExtData({ type: item.type });
+                marker.on('click', function () {
+                    var infoWindow = new AMap.InfoWindow({
+                        content: `
+                            <div class="info-window">
+                                <h3>${item.name}</h3>
+                                ${item.image ? `<img src="${item.image}" alt="${item.name}">` : ''}
+                                ${item.video ? `<video controls src="${item.video}"></video>` : ''}
+                                <p>位置坐标: ${item.coordinates.join(', ')}</p>
+                                <p>类型: ${item.type}</p>
+                                <p>介绍: ${item.description}</p>
+                            </div>
+                        `,
+                        offset: new AMap.Pixel(0, -30)
+                    });
+                    infoWindow.open(map, marker.getPosition());
+                });
+                return marker;
+            });
+        
+        }
+        
+        // 根据类型获取标记图片
+        function getMarkerImage(type) {
+            switch (type) {
+                case '传统美术':
+                    return 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png';
+                case '传统音乐':
+                    return 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+                case '曲艺':
+                    return 'https://github.com/hsy-03/-/blob/main/marker.png?raw=true';
+                default:
+                    return 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png';
+            }
+        }
+
+  
+        function filterMarkers(type) {
+            markers.forEach(marker => {
+                if (type === 'all' || marker.getExtData().type === type) {
+                    marker.show();
+                } else {
+                    marker.hide();
+                }
+            });
+        }
+
+        document.getElementById('heritageType').addEventListener('change', function() {
+            filterMarkers(this.value);
+        });
+
+        
+       // 修改表格初始化代码
+       layui.use(['table', 'form'], function () {
+            var table = layui.table;
+            var form = layui.form;
+
+            window.renderTable = function (data) {
+                table.render({
+                    elem: '#heritageTable',
+                    cols: [[
+                        { type: 'numbers', title: '序号', width: 60 },
+                        { field: 'name', title: '名称', width: 200 },
+                        { field: 'coordinates', title: '坐标', width: 200 },
+                        { field: 'type', title: '类型', width: 100 },
+                        { field: 'image', title: '图片', width: 100, templet: function (d) {
+                            return d.image ? `<img src="${d.image}" style="width: 50px; height: 50px;" onclick="showMedia('${d.image}', 'img')">` : '无';
+                        }},
+                        { field: 'video', title: '视频', width: 100, templet: function (d) {
+                            return d.video ? `<video src="${d.video}" style="width: 50px; height: 50px;" controls onclick="showMedia('${d.video}', 'video')"></video>` : '无';
+                        }},
+                        { field: 'description', title: '介绍', width: 400 },
+                        { fixed: 'right', title: '', toolbar: '#barDemo', width: 150 }
+                    ]],
+                    data: data,
+                    page: true,
+                    limit: 10,
+                    limits: [10, 20, 50, 100]
+                });
+            }
+        });
+
+      // 使用 fetch 方法加载 JSON 数据
+      fetch('heritageData.json')
+            .then(response => response.json())
+            .then(data => {
+                heritageData = data;
+                addMarkers(data);
+                renderTable(data);
+
+            })
+            .catch(error => console.error('Error loading JSON data:', error));
+   
+             // 显示/隐藏不同部分的函数
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+
+            // 如果显示的是基础信息管理界面，重新渲染表格
+            if (sectionId === 'infoManagement' && heritageData) {
+                renderTable(heritageData);
+            }
+        }
+
+       
+        // 设置地图样式,只显示国界线和省界线
+        map.setMapStyle('amap://styles/vintage?features=land|building|bg|road|point|admin');
+
+        function showMedia(url, type) {
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area: ['auto'],
+                skin: 'layui-layer-nobg',
+                shadeClose: true,
+                content: type === 'img' ? 
+                    `<img src="${url}" style="max-width: 100%; max-height: 100%;">` : 
+                    `<video src="${url}" controls style="max-width: 100%; max-height: 100%;"></video>`
+            });
+        }
+        // ... 其余的 JavaScript 代码 ...
+         // 显示介绍非物质文化遗产的窗口
+         document.getElementById('introModal').style.display = 'block';
+
+// 放大显示图片和视频的函数
+function showMedia(src, type) {
+    var mediaContent = document.getElementById('mediaContent');
+    if (type === 'img') {
+        mediaContent.innerHTML = `<img src="${src}" style="width:100%;">`;
+    } else if (type === 'video') {
+        mediaContent.innerHTML = `<video src="${src}" controls style="width:100%;"></video>`;
+    }
+    document.getElementById('mediaModal').style.display = 'block';
+}
+
+
+
+        
+    </script>
+</body>
+
+</html>

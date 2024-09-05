@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>竹刻（无锡留青竹刻）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('http://ich.dili360.com/statics/Project/img/con-bg.png') repeat;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: overlay;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .detail-top {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: "Microsoft YaHei Light", "微软雅黑 Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+        .address {
+            font-size: 16px;
+            color: #666;
+        }
+        .detail-block {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .detail-part {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .detail-part-left {
+            width: 60%;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+        .detail-part-right {
+            width: 35%;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .introduce {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #444;
+        }
+        .card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .card-item {
+            margin-bottom: 10px;
+        }
+        .card-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .map {
+            height: 300px;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #1E9FFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content detail-content">
+        <div class="detail-top">
+            <div class="title">竹刻（无锡留青竹刻）</div>
+            <div class="address">中国江苏省无锡市</div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <div class="detail-part-left">
+                    <h2>项目介绍</h2>
+                    <div class="introduce">
+                        <br>　　
+<br>　　无锡竹刻历史久远，技法多样，风格清雅古朴，别具特色。早在明代，无锡籍著名竹刻家张希黄即创立留青浅刻山水技法，在中国竹刻史上起到了垂范后世的作用。清代，竹刻工艺在无锡地区流传不绝，产生了许多重要作品。1915年，无锡籍竹刻家、金石家张瑞芝在无锡市中心复兴路开设“双契轩艺坊”，由吴稚晖题匾。经过长期发展，无锡竹刻由阴文浅刻发展到留青浅刻、薄地阳文、阳文糙地等多种刻法，以精细、古雅、秀丽的艺术特色蜚声于沪宁沿线。
+<br>　　早期无锡竹刻以精刻摹缩金石文字为主，其次是镌刻名家书画。无锡竹刻家通过运刀的深浅利涩，将书画的神韵笔意表现得淋漓尽致。作品气韵高古，清新俊雅，显示出浓重的文人气质。
+<br>　　1949年后，无锡竹刻技法从原先的浅刻向浮雕、透雕、圆雕发展，逐步形成留青浅刻与浮雕、透雕、圆雕熔于一炉的独特方式，在以留青浅刻为主的江南竹刻艺苑中独树一帜。无锡双契轩的竹刻家均工书善画，通诗能文，在实践中创造出了一大批精妙绝伦的传世精品。
+<br>　　目前，无锡竹刻从业人员日渐稀少，主要的艺人仅有4位，生存发展极为困难。圆雕、浮雕、透雕等高难度技巧学习起来难度很大，导致这项传统工艺后继乏人。如不加以保护扶持，历史悠久、技艺卓绝的无锡竹刻势必走向衰亡。             
+                    </div>
+                </div>
+                <div class="detail-part-right">
+                    <div class="detail-right-top">
+                        <h2>分类及认证</h2>
+                        <div class="card">
+                            <div class="card-item">
+                                <span class="card-name">项&emsp;&emsp;目：</span>
+                                <span class="card-con">竹刻（无锡留青竹刻）</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">分&emsp;&emsp;类：</span>
+                                <span class="card-con">传统美术</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">申报地区：</span>
+                                <span class="card-con">中国江苏省无锡市</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">认证级别：</span>
+                                <span class="card-con">国家级</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-right-bot">
+                        <h2>所在申报地区</h2>
+                        <div class="map" id="amap-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关传承人</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>出生日期</th>
+                            <th>民族</th>
+                            <th>类型</th>
+                            <th>项目编号</th>
+                            <th>项目名称</th>
+                            <th>申报地区或单位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>03-1248</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b14d626a7">乔锦洪</a></td>
+                            <td>男</td>
+                            <td>1947.05</td>
+                            <td>汉族</td>
+                            <td>竹木雕刻技艺</td>
+                            <td>Ⅶ-46</td>
+                            <td><a href="">竹刻（无锡留青竹刻）</a></td>
+                            <td>中国江苏省无锡市</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关项目</h2>
+          <table>
+            <tbody>
+              <tr>
+                <th>编号</th>
+                <th>项目名称</th>
+                <th>类型</th>
+                <th>申报地区或单位</th>
+              </tr>
+                            <tr>
+                <td>Ⅶ-46</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f35d21b39r95741288">竹刻（宝庆竹刻）</a></td>
+                <td>竹木雕刻技艺</td>
+                <td>中国湖南省邵阳市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-46</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f35daadd4919924166">竹刻（常州留青竹刻）</a></td>
+                <td>竹木雕刻技艺</td>
+                <td>中国江苏省常州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-46</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f35e0d498541987214">竹刻（黄岩翻簧竹雕）</a></td>
+                <td>竹木雕刻技艺</td>
+                <td>中国浙江省台州市黄岩区</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-46</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f35e576e3o31709382">竹刻（江安竹簧）</a></td>
+                <td>竹木雕刻技艺</td>
+                <td>中国四川省宜宾市江安县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-46</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f35eb1587181602008">竹刻（徽州竹雕）</a></td>
+                <td>竹木雕刻技艺</td>
+                <td>中国安徽省黄山市徽州区</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-46</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f35f02589y57334620">竹刻（莆田留青竹刻）</a></td>
+                <td>竹木雕刻技艺</td>
+                <td>中国福建省莆田市城厢区</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-46</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f4f092d94q76621024">竹刻（嘉定竹刻）</a></td>
+                <td>竹木雕刻技艺</td>
+                <td>中国上海市上海市嘉定区</td>
+              </tr>
+                          </tbody>
+          </table>
+        </div>
+
+    <script>
+        // 初始化地图
+        var map = new AMap.Map('amap-container', {
+            center: [120.309378, 31.565581],
+            zoom: 11
+        });
+
+        // 添加标记
+        var marker = new AMap.Marker({
+            position: [120.309378, 31.565581],
+            title: '竹刻（无锡留青竹刻）'
+        });
+
+        map.add(marker);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香包（徐州香包）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('http://ich.dili360.com/statics/Project/img/con-bg.png') repeat;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: overlay;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .detail-top {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: "Microsoft YaHei Light", "微软雅黑 Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+        .address {
+            font-size: 16px;
+            color: #666;
+        }
+        .detail-block {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .detail-part {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .detail-part-left {
+            width: 60%;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+        .detail-part-right {
+            width: 35%;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .introduce {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #444;
+        }
+        .card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .card-item {
+            margin-bottom: 10px;
+        }
+        .card-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .map {
+            height: 300px;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #1E9FFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content detail-content">
+        <div class="detail-top">
+            <div class="title">香包（徐州香包）</div>
+            <div class="address">中国江苏省徐州市</div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <div class="detail-part-left">
+                    <h2>项目介绍</h2>
+                    <div class="introduce">
+                        <br>　　
+<br>　　香包又名“香囊”、“香缨”，俗称“香布袋”、“料布袋”，是一种传统的佩饰物，制作和佩戴香包的习俗在我国由来已久。
+<br>　　流传于江苏省徐州市的香包制作技艺别具特色，为世所称。徐州香包合实用性与观赏性为一，它造型纯朴，图案精美，色彩艳丽，绣法工整细致，内装的中草药能驱蚊防潮，净化空气，预防疾病。徐州香包形制丰富，有心形、圆形、菱形、元宝形、蝴蝶形、花瓶形、水滴形、长方形、人物娃娃等各种形状。外部图案多采用龙凤呈祥、鸳鸯戏水、松鹤延年、喜鹊闹梅等传统的喜庆吉祥题材，以寄托人们祈求祥瑞、辟邪纳福、丰衣足食的美好愿望。随着经济的发展和生活水平的提高，徐州香包的题材也在发生着变化，出现了以戏曲脸谱、布袋和尚、麒麟送子、观音送福、两汉文化、卡通娃娃等为表现内容的作品。
+<br>　　随着社会的变迁，传统民俗逐渐从现代生活中淡出，香包不再像以前那样受人珍视。在机器缝制技术迅速发展普及的情况下，掌握传统香包制作技能的艺人日渐稀少，徐州香包工艺濒临灭绝，亟待挖掘保护。　                          
+                    </div>
+                </div>
+                <div class="detail-part-right">
+                    <div class="detail-right-top">
+                        <h2>分类及认证</h2>
+                        <div class="card">
+                            <div class="card-item">
+                                <span class="card-name">项&emsp;&emsp;目：</span>
+                                <span class="card-con">香包（徐州香包）</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">分&emsp;&emsp;类：</span>
+                                <span class="card-con">传统美术</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">申报地区：</span>
+                                <span class="card-con">中国江苏省徐州市</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">认证级别：</span>
+                                <span class="card-con">国家级</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-right-bot">
+                        <h2>所在申报地区</h2>
+                        <div class="map" id="amap-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关项目</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>项目名称</th>
+                            <th>类型</th>
+                            <th>申报地区或单位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ⅶ-26</td>
+                            <td><a href="/index/project/detail/region_code/-1/r_code/5d316f355638c9k95837977">庆阳香包绣制</a></td>
+                            <td>刺绣技艺</td>
+                            <td>中国甘肃省庆阳市</td>
+                          </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化地图
+        var map = new AMap.Map('amap-container', {
+            center: [117.179158,34.264843],
+            zoom: 11
+        });
+
+        // 添加标记
+        var marker = new AMap.Marker({
+            position: [117.179158,34.264843],
+            title: '香包（徐州香包）'
+        });
+
+        map.add(marker);
+    </script>
+</body>
+
+</html>

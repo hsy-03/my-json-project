@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>苏绣（无锡精微绣）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('http://ich.dili360.com/statics/Project/img/con-bg.png') repeat;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: overlay;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .detail-top {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: "Microsoft YaHei Light", "微软雅黑 Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+        .address {
+            font-size: 16px;
+            color: #666;
+        }
+        .detail-block {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .detail-part {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .detail-part-left {
+            width: 60%;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+        .detail-part-right {
+            width: 35%;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .introduce {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #444;
+        }
+        .card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .card-item {
+            margin-bottom: 10px;
+        }
+        .card-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .map {
+            height: 300px;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #1E9FFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content detail-content">
+        <div class="detail-top">
+            <div class="title">苏绣（无锡精微绣）</div>
+            <div class="address">中国江苏省无锡市</div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <div class="detail-part-left">
+                    <h2>项目介绍</h2>
+                    <div class="introduce">
+                        <br>　　
+                        <br>　　江苏无锡是苏绣的重要发源地之一，无锡刺绣又称“精微绣”，据汉代刘向的《说苑》记载，早在两千五百多年前无锡就已出现刺绣服饰。明代中叶，俞氏创制的堆纱绣因巧夺天工而被选为贡品。清代无锡精微绣得到进一步发展，创造出了“闺阁绣”、“切马鬃绣”、“堆纱绣”、“填色稀铺法”、“乱针绣”等独特的技法。20世纪80年代初，在继承传统的基础上发展出了“双面精微绣”，成为举世公认的优秀艺术品种。
+                        <br>　　无锡精微绣的艺术特色极为突出，它卷幅微小，造型精巧，绣技精湛，往往能在很小的画面内绣制人物、场景、文字、图案等，呈现出所谓“寸人豆马，蝇足小字”的奇观。与一般双面绣相比，精微绣的技艺要求更高，难度更大，在用料、用色、用线、用针上更加讲究。它要求刺绣艺人不但绣艺高超，而且还具备较高的艺术素养。艺人绣制精细局部时，要将一根丝线劈成八十分之一，有时人物头部只有绿豆大小，五官无法用笔墨勾勒，艺人需手眼相通方能绣成。在长期的发展过程中，无锡精微绣与书画紧密结合在一起，焕发出独特的艺术魅力。精微绣艺术是中国最早在理论上得到总结的刺绣品种，清代即出现重要的理论著作《绣谱》对之进行论述。它体现着中华民族悠久的服饰文化和日用装饰文化，深为文人雅士及国内外艺术爱好者、收藏者所珍爱。
+                        <br>　　在社会发展变革的过程中，受工业化、外来文化及过度商业化开发的冲击，无锡精微绣正逐步萎缩，业内人才大量流失，传承困难，后继乏人。这一优秀的民间工艺已处于濒危状态，亟待采取切实有效的措施加以保护。             
+                    </div>
+                </div>
+                <div class="detail-part-right">
+                    <div class="detail-right-top">
+                        <h2>分类及认证</h2>
+                        <div class="card">
+                            <div class="card-item">
+                                <span class="card-name">项&emsp;&emsp;目：</span>
+                                <span class="card-con">苏绣（无锡精微绣）</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">分&emsp;&emsp;类：</span>
+                                <span class="card-con">传统美术</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">申报地区：</span>
+                                <span class="card-con">中国江苏省无锡市</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">认证级别：</span>
+                                <span class="card-con">国家级</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-right-bot">
+                        <h2>所在申报地区</h2>
+                        <div class="map" id="amap-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关传承人</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>出生日期</th>
+                            <th>民族</th>
+                            <th>类型</th>
+                            <th>项目编号</th>
+                            <th>项目名称</th>
+                            <th>申报地区或单位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>03-1239</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b169c565e">赵红育</a></td>
+                            <td>女</td>
+                            <td>1958.04.30</td>
+                            <td></td>
+                            <td>刺绣技艺</td>
+                            <td>Ⅶ-18</td>
+                            <td><a href="">苏绣（无锡精微绣）</a></td>
+                            <td>中国江苏省无锡市</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关项目</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>项目名称</th>
+                            <th>类型</th>
+                            <th>申报地区或单位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ⅶ-18</td>
+                            <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b282255e31528658">苏绣</a></td>
+                            <td>刺绣技艺</td>
+                            <td>中国江苏省苏州市</td>
+                        </tr>
+                        <tr>
+                            <td>Ⅶ-18</td>
+                            <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b307902v85682564">苏绣（南通仿真绣）</a></td>
+                            <td>刺绣技艺</td>
+                            <td>中国江苏省南通市</td>
+                        </tr>
+                        <tr>
+                            <td>Ⅶ-18</td>
+                            <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b34ce96h99917183">苏绣（扬州刺绣）</a></td>
+                            <td>刺绣技艺</td>
+                            <td>中国江苏省扬州市</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化地图
+        var map = new AMap.Map('amap-container', {
+            center: [120.30943, 31.57496],
+            zoom: 11
+        });
+
+        // 添加标记
+        var marker = new AMap.Marker({
+            position: [120.30943, 31.57496],
+            title: '苏绣（无锡精微绣）'
+        });
+
+        map.add(marker);
+    </script>
+</body>
+
+</html>

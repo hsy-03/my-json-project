@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>剪纸（南京剪纸）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('http://ich.dili360.com/statics/Project/img/con-bg.png') repeat;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: overlay;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .detail-top {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: "Microsoft YaHei Light", "微软雅黑 Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+        .address {
+            font-size: 16px;
+            color: #666;
+        }
+        .detail-block {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .detail-part {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .detail-part-left {
+            width: 60%;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+        .detail-part-right {
+            width: 35%;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .introduce {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #444;
+        }
+        .card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .card-item {
+            margin-bottom: 10px;
+        }
+        .card-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .map {
+            height: 300px;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #1E9FFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content detail-content">
+        <div class="detail-top">
+            <div class="title">剪纸（南京剪纸）</div>
+            <div class="address">中国江苏省南京市</div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <div class="detail-part-left">
+                    <h2>项目介绍</h2>
+                    <div class="introduce">
+                        <br>　　
+                        <br>　　南京剪纸主要流行于江苏省南京及其周边地区，据清代道光年间甘熙所撰的《白下琐言》等史料记载，南京剪纸在明代初年已十分流行。20世纪50年代，南京民间剪纸生产合作社和民间工艺厂先后成立，制作剪纸并出口外销。
+                        <br>　　南京剪纸的个性特征极为突出，它融北方剪纸的粗放和南方剪纸的细腻为一体，花中有花，题中有题，粗中有细，拙中见灵，艺术形式优美异常。南京剪纸的传统品种主要包括喜花、斗香花、门笺和包括鞋花在内的刺绣花样等，其中的“斗香花”刻纸在全国独一无二，是一种天才性的创造，充分体现出南京剪纸的独特风格，丰富了中国民间艺术的宝库。南京剪纸创作时不用画稿，起剪后线条连绵不断，犹如“一笔画”，一气呵成，技艺十分高超。
+                        <br>　　在南京剪纸发展的过程中，产生了中国近现代剪纸史上两位杰出的艺术家。一位是张吉根，人称“神剪张”，身怀绝技又善于创新；另一位是胡家芝，年已过百，仍能操剪创作。
+                        <br>　　随着时代的变迁，南京剪纸艺人在生活压力下陷入困境，有的被迫改行，有的创作受到影响。在此情势下，南京剪纸的从业人数不断递减，传承人年龄偏大，后继乏人，剪纸技艺传承困难，濒危状况日益严重，急需抢救保护。             
+                    </div>
+                </div>
+                <div class="detail-part-right">
+                    <div class="detail-right-top">
+                        <h2>分类及认证</h2>
+                        <div class="card">
+                            <div class="card-item">
+                                <span class="card-name">项&emsp;&emsp;目：</span>
+                                <span class="card-con">剪纸（南京剪纸）</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">分&emsp;&emsp;类：</span>
+                                <span class="card-con">传统美术</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">申报地区：</span>
+                                <span class="card-con">中国江苏省南京市</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">认证级别：</span>
+                                <span class="card-con">国家级</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-right-bot">
+                        <h2>所在申报地区</h2>
+                        <div class="map" id="amap-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关传承人</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>出生日期</th>
+                            <th>民族</th>
+                            <th>类型</th>
+                            <th>项目编号</th>
+                            <th>项目名称</th>
+                            <th>申报地区或单位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>03-1225</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b1524ae28">张方林</a></td>
+                            <td>男</td>
+                            <td>1949.04</td>
+                            <td>汉族</td>
+                            <td>剪纸技艺</td>
+                            <td>Ⅶ-16</td>
+                            <td><a href="">剪纸（南京剪纸）</a></td>
+                            <td>中国江苏省南京市</td>
+                          </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关项目</h2>
+          <table>
+            <tbody>
+              <tr>
+                <th>编号</th>
+                <th>项目名称</th>
+                <th>类型</th>
+                <th>申报地区或单位</th>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a489fd4u90941554">剪纸（丰宁满族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国河北省承德市丰宁满族自治县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a4d10a9r27572504">剪纸（中阳剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国山西省吕梁市中阳县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a521090422494628">剪纸（医巫闾山满族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国辽宁省锦州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a565363208768889">剪纸（扬州剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国江苏省扬州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a5ac130p62839433">剪纸（乐清细纹刻纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国浙江省温州市乐清市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a5efaa3y15343421">剪纸（广东剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国广东省佛山市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a62f207y98971319">剪纸（广东剪纸）(广东省汕头市)</a></td>
+                <td>剪纸技艺</td>
+                <td>中国广东省汕头市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a66db70m77307040">剪纸（广东剪纸）(广东省潮州市)</a></td>
+                <td>剪纸技艺</td>
+                <td>中国广东省潮州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a6d73c0911077881">剪纸（傣族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国云南省</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a719c52t80033852">剪纸（安塞剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国陕西省延安市安塞区</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a755558o72322170">剪纸（广灵染色剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国山西省大同市广灵县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a798bb0e94490431">剪纸（和林格尔剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国内蒙古自治区呼和浩特市和林格尔县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a7e1a57z15412995">剪纸（庄河剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国辽宁省大连市庄河市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a829e04d83460008">剪纸（岫岩满族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国辽宁省鞍山市岫岩满族自治县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a875523016992936">剪纸（建平剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国辽宁省朝阳市建平县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a8ae984f20940673">剪纸（新宾满族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国辽宁省抚顺市新宾满族自治县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a8e0915b28009954">剪纸（长白山满族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>吉林省通化市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a91a708u99588798">剪纸（方正剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国黑龙江省哈尔滨市方正县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a964d72604003801">剪纸（上海剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国上海市上海市徐汇区</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1a9f2ec9447349048">剪纸（金坛刻纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国江苏省</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1aa23699f27019202">剪纸（浦江剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国浙江省金华市浦江县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1aa57a36635164049">剪纸（阜阳剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国安徽省阜阳市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1aa96840800919325">剪纸（漳浦剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国福建省漳州市漳浦县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1aaca901w66137694">剪纸（泉州（李尧宝）刻纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国福建省泉州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ab0b712n86564551">剪纸（柘荣剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国福建省宁德市柘荣县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ab596c7x86973792">剪纸（瑞昌剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国江西省九江市瑞昌市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1abecfb5o78034857">剪纸（莒县过门笺）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国山东省日照市莒县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ac36fe2n24635351">剪纸（滨州民间剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>山东省滨州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ac7cc17278780015">剪纸（高密剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国山东省潍坊市高密市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1acb9e51d21809053">剪纸（烟台剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国山东省烟台市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1acf1810a72657816">剪纸（灵宝剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国河南省三门峡市灵宝市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ad32cf8621880479">剪纸（卢氏剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国河南省三门峡市卢氏县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ad70449h77055609">剪纸（辉县剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国河南省新乡市辉县市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ada11c5l15986953">剪纸（孝感雕花剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>湖北省孝感市孝南区</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1add37c0x11325081">剪纸（鄂州雕花剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国湖北省鄂州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ae19459l72306346">剪纸（仙桃雕花剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国湖北省</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1ae76087i15146928">剪纸（苗族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国贵州省黔东南苗族侗族自治州剑河县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1aecb601446871877">剪纸（庆阳剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国甘肃省庆阳市镇原县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1af0e629807608929">剪纸（包头剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国内蒙古自治区包头市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b002b65238716868">剪纸（新干剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国江西省吉安市新干县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b03ddb7o29883843">剪纸（延川剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国陕西省延安市延川县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b071d49m85562398">剪纸（旬邑彩贴剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国陕西省咸阳市旬邑县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b0a08f9p74133312">剪纸（会宁剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国甘肃省白银市会宁县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b0d59c0y10283116">剪纸（静乐剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国山西省忻州市静乐县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b109a31w73109664">剪纸（桐庐剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国浙江省杭州市桐庐县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b149fe5k32622859">剪纸（浦城剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国福建省南平市浦城县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b18c8a8f07222505">剪纸（水族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国贵州省黔南布依族苗族自治州</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b1cb683f30218149">剪纸（定西剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国甘肃省定西市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b209210f65290088">剪纸（回族剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国宁夏回族自治区</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f4dd84824d86768021">剪纸（蔚县剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国河北省张家口市蔚县</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f4de4cde9o41375439">剪纸（徐州剪纸）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国江苏省徐州市</td>
+              </tr>
+                            <tr>
+                <td>Ⅶ-16</td>
+                <td><a href="/index/project/detail/region_code/-1/r_code/5d316f4ded1983k81161131">剪纸（踏虎凿花）</a></td>
+                <td>剪纸技艺</td>
+                <td>中国湖南省湘西土家族苗族自治州泸溪县</td>
+              </tr>
+                          </tbody>
+          </table>
+        </div>
+    <script>
+        // 初始化地图
+        var map = new AMap.Map('amap-container', {
+            center: [118.796877, 32.060255],
+            zoom: 11
+        });
+
+        // 添加标记
+        var marker = new AMap.Marker({
+            position: [118.796877, 32.060255],
+            title: '剪纸（南京剪纸）'
+        });
+
+        map.add(marker);
+    </script>
+</body>
+
+</html>

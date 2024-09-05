@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>苏绣</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.css">
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=2e6684129c10f64ce1e2ccbb614ff61c"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: url('http://ich.dili360.com/statics/Project/img/con-bg.png') repeat;
+            background-color: rgba(255, 255, 255, 0.8);
+            background-blend-mode: overlay;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .detail-top {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: "Microsoft YaHei Light", "微软雅黑 Light", "Microsoft YaHei", "微软雅黑", sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+        .address {
+            font-size: 16px;
+            color: #666;
+        }
+        .detail-block {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .detail-part {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .detail-part-left {
+            width: 60%;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+        .detail-part-right {
+            width: 35%;
+        }
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .introduce {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #444;
+        }
+        .card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .card-item {
+            margin-bottom: 10px;
+        }
+        .card-name {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .map {
+            height: 300px;
+            margin-top: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #1E9FFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content detail-content">
+        <div class="detail-top">
+            <div class="title">苏绣</div>
+            <div class="address">中国江苏省苏州市</div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <div class="detail-part-left">
+                    <h2>项目介绍</h2>
+                    <div class="introduce">
+                        <br>　　
+                        <br>　　苏绣为苏州刺绣之简称，它以产生之地命名，历史上曾广泛存在于苏州城乡。近十年来苏绣行业逐渐萎缩，现主要集中于苏州市区和高新区东渚镇、镇湖街道一带。
+                        <br>　　苏绣技艺的起源不详。现存的宋代以来苏绣实物显示了不同历史时期苏绣技艺的发展状况和实际水平，如元代苏绣残片表明，当时已有一件作品运用9种刺绣针法；明代绣品多采用文人画稿，开始形成精细雅洁的独特风格；清代苏绣成为行业，商品绣极为发达，苏州因此有“绣市”之称。道光年间，苏州女子丁佩总结刺绣技艺，完成了中国第一部刺绣专业著作《绣谱》；清末民初，苏绣名家沈寿创“仿真绣”，晚年口述《雪宦绣谱》，总结刺绣经验；20世纪30年代，苏绣名家杨守玉创“乱针绣”，丰富和扩展了苏绣的题材与内涵；20世纪50年代，苏州刺绣研究所建立，聚集、培养了大批苏绣人才，她们在继承传统绣法的基础上研究和创制了多种绣法与针法，使苏绣技艺不断发展和提高。
+                        <br>　　自明代以来，苏绣大师辈出，流派纷呈，目前尚有确切传人并有影响的苏绣可分为三大谱系，
+                        <br>　　一是传统细绣，二是沈寿所创的“仿真绣”，三是杨守玉所创的“乱针绣”。这三大谱系的技艺都有着丰富而多变的适应性，完整而系统的技艺法理，具有传统的书画品味和浓厚的地方色彩。
+                        <br>　　苏绣一直是苏州地区最具代表性的工艺美术，对工艺美术史、民俗学和女性学等学科的研究具有重要价值。但随着现代商品经济和科学技术的发展，电脑绣花技术得到普遍应用，在此情势下苏绣的生存空间日益缩小，拥有高超技艺的苏绣传承人和高品质的苏绣艺术品越来越少，苏绣正面临着有序传承的危机，亟待抢救、保护。
+                        <br>　　                          
+                    </div>
+                </div>
+                <div class="detail-part-right">
+                    <div class="detail-right-top">
+                        <h2>分类及认证</h2>
+                        <div class="card">
+                            <div class="card-item">
+                                <span class="card-name">项&emsp;&emsp;目：</span>
+                                <span class="card-con">苏绣</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">分&emsp;&emsp;类：</span>
+                                <span class="card-con">传统美术</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">申报地区：</span>
+                                <span class="card-con">中国江苏省苏州市</span>
+                            </div>
+                            <div class="card-item">
+                                <span class="card-name">认证级别：</span>
+                                <span class="card-con">国家级</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-right-bot">
+                        <h2>所在申报地区</h2>
+                        <div class="map" id="amap-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关传承人</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>出生日期</th>
+                            <th>民族</th>
+                            <th>类型</th>
+                            <th>项目编号</th>
+                            <th>项目名称</th>
+                            <th>申报地区或单位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>04-1765</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b15347cde">张玉英</a></td>
+                            <td>女</td>
+                            <td>1935.08</td>
+                            <td>汉族</td>
+                            <td>刺绣技艺</td>
+                            <td>Ⅶ-18</td>
+                            <td><a href="">苏绣</a></td>
+                            <td>中国江苏省苏州市</td>
+                          </tr>
+                                        <tr>
+                            <td>04-1767</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b1570a758">姚惠芬</a></td>
+                            <td>女</td>
+                            <td>1967.11</td>
+                            <td>汉族</td>
+                            <td>刺绣技艺</td>
+                            <td>Ⅶ-18</td>
+                            <td><a href="">苏绣</a></td>
+                            <td>中国江苏省苏州市</td>
+                          </tr>
+                                        <tr>
+                            <td>03-1238</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b15ca0aa1">姚建萍</a></td>
+                            <td>女</td>
+                            <td>1967.04.06</td>
+                            <td></td>
+                            <td>刺绣技艺</td>
+                            <td>Ⅶ-18</td>
+                            <td><a href="">苏绣</a></td>
+                            <td>中国江苏省苏州市</td>
+                          </tr>
+                                        <tr>
+                            <td>04-1768</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b15ea7b02">张美芳</a></td>
+                            <td>女</td>
+                            <td>1946.08</td>
+                            <td>汉族</td>
+                            <td>刺绣技艺</td>
+                            <td>Ⅶ-18</td>
+                            <td><a href="">苏绣</a></td>
+                            <td>中国江苏省苏州市</td>
+                          </tr>
+                                        <tr>
+                            <td>04-1766</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b15f29f47">蒋雪英</a></td>
+                            <td>女</td>
+                            <td>1933.10</td>
+                            <td>汉族</td>
+                            <td>刺绣技艺</td>
+                            <td>Ⅶ-18</td>
+                            <td><a href="">苏绣</a></td>
+                            <td>中国江苏省苏州市</td>
+                          </tr>
+                                        <tr>
+                            <td>04-1764</td>
+                            <td><a href="/index/inheritor/detail/region_code/-1/r_code/5d36b16280d57">余福臻</a></td>
+                            <td>女</td>
+                            <td>1942.03</td>
+                            <td>汉族</td>
+                            <td>刺绣技艺</td>
+                            <td>Ⅶ-18</td>
+                            <td><a href="">苏绣</a></td>
+                            <td>中国江苏省苏州市</td>
+                          </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="detail-block">
+            <div class="detail-part">
+                <h2>相关项目</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>项目名称</th>
+                            <th>类型</th>
+                            <th>申报地区或单位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ⅶ-18</td>
+                            <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b2c3770e82352109">苏绣（无锡精微绣）</a></td>
+                            <td>刺绣技艺</td>
+                            <td>中国江苏省无锡市</td>
+                          </tr>
+                                        <tr>
+                            <td>Ⅶ-18</td>
+                            <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b307902v85682564">苏绣（南通仿真绣）</a></td>
+                            <td>刺绣技艺</td>
+                            <td>中国江苏省南通市</td>
+                          </tr>
+                                        <tr>
+                            <td>Ⅶ-18</td>
+                            <td><a href="/index/project/detail/region_code/-1/r_code/5d316f1b34ce96h99917183">苏绣（扬州刺绣）</a></td>
+                            <td>刺绣技艺</td>
+                            <td>中国江苏省扬州市</td>
+                          </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化地图
+        var map = new AMap.Map('amap-container', {
+            center: [120.613596,31.310293],
+            zoom: 11
+        });
+
+        // 添加标记
+        var marker = new AMap.Marker({
+            position: [120.613596,31.310293],
+            title: '苏绣'
+        });
+
+        map.add(marker);
+    </script>
+</body>
+
+</html>
